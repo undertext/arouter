@@ -1,0 +1,24 @@
+{
+  "name": "undertext/arouter",
+  "description": "Annotation based router",
+  "keywords": ["router", "psr-7"],
+  "homepage": "https://github.com/undertext/arouter",
+  "license": "MIT",
+  "require": {
+    "doctrine/annotations": "1.4.*",
+    "psr/http-message": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "ARouter\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ARouter\\": "test/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.2"
+  }
+}
