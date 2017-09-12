@@ -10,13 +10,13 @@ use Doctrine\Common\Annotations\Annotation\Required;
  * You can see how method argument $user is assigned to a $_COOKIE['user']
  * in next example:
  *   ```php
- * @CookieValue (for = 'user')
+ * @CookieValue (for="user")
  * public function sayHello($user) {}
  * ```
  * If the name of cookie is different from argument name
  * (e.g. $_COOKIE['user_value']) use next syntax:
  *   ```php
- * @CookieValue (for = 'user', from = "user_value")
+ * @CookieValue (for="user", from="user_value")
  * public function sayHello($user) {}
  * ```
  *

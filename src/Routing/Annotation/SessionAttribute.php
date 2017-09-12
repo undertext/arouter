@@ -10,13 +10,13 @@ use Doctrine\Common\Annotations\Annotation\Required;
  * You can see how method argument $user is assigned to a $_SESSION['user']
  * in next example:
  *   ```php
- * @SessionAttribute (for = 'user')
+ * @SessionAttribute (for="user")
  * public function sayHello($user) {}
  * ```
  * If the name of session attribute is different from argument name
  * (e.g. $_SESSION['user_value']) use next syntax:
  *   ```php
- * @SessionAttribute (for = 'user', from = "user_value")
+ * @SessionAttribute (for="user", from="user_value")
  * public function sayHello($user) {}
  * ```
  *

@@ -10,11 +10,13 @@ $router = Router::build('src/Controller');
 // Get matching route handler.
 $routeHandler = $router->getRouteHandler(ServerRequest::fromGlobals());
 if ($routeHandler) {
-  $route->execute();
+  $response = $routeHandler->execute();
 }
 else {
-  print '404';
+  $response = new Response(404, [], "Route not found"); // This is an example of Guzzle HTTP Response usage. 
 }
+
+outputResponse($response); // outputResponse is a function that converts response to string and output it.
 ```
 
 Controllers

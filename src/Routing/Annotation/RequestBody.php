@@ -11,7 +11,7 @@ use Doctrine\Common\Annotations\Annotation\Required;
  * You can see how method argument $json is assigned to a JSON web request body
  * in next example:
  *   ```php
- * @RequestBody (for = 'json')
+ * @RequestBody (for="json")
  * public function something($json) { $decoded_json = json_decode($json); }
  * ```
  *

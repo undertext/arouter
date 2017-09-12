@@ -10,15 +10,18 @@ use Doctrine\Common\Annotations\Annotation\Required;
  * You can see how method argument $page is assigned to a request parameter
  * from 'example.com/list?page=2' URL in next example:
  *   ```php
- * @RequestParam (for = 'page')
+ * @RequestParam (for="page")
  * public function list($page) { print "Current page is $page" }
  * ```
  * If the name of request parameter is different from argument name
  * (example.com/list?pageNum=2) you can use next syntax:
  *   ```php
- * @RequestParam (for = 'page', from = "pageNum")
+ * @RequestParam (for="page", from = "pageNum")
  * public function list($page) { print "Current page is $page" }
  * ```
+ *
+ * If request parameter is a file you should typehint method parameter with
+ *  <strong>UploadedFileInterface</strong> interface.
  *
  * @Annotation
  * @Target("ALL")
