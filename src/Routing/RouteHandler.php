@@ -2,6 +2,7 @@
 
 namespace ARouter\Routing;
 
+use Psr\Http\Message\ResponseInterface;
 use ReflectionMethod;
 use ARouter\Routing\Exception\MissingArgumentHandlerException;
 
@@ -113,11 +114,13 @@ class RouteHandler {
   }
 
   /**
-   * Execute route handler.
+   * Execute route handler and return response.
    */
-  public function execute(): void {
+  public function execute(): ResponseInterface {
     $arguments = $this->convertKeyedArgs($this->keyedArgs);
-    call_user_func_array([$this->controller, $this->method], $arguments);
+    $response = call_user_func_array([$this->controller, $this->method], $arguments);
+    assert($response instanceof ResponseInterface, "Controller's method should return Response object.");
+    return $response;
   }
 
   /**
