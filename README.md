@@ -103,3 +103,13 @@ Controller is a class with *@Controller* annotation. Controller's methods annota
   @CookieValue (for="some")
   public function something($some) { }
   ```
+  
+  Router as PSR-15 middleware.
+ ----------------------------
+  This router provides PSR-15 middleware support.
+  Usage example with https://github.com/procurios/middleware-dispatcher :
+   ```php
+   $dispatcher = (new Dispatcher())
+   ->withMiddleware(new RoutingMiddleware($router));
+   $response = $dispatcher->process($request);
+   ```
