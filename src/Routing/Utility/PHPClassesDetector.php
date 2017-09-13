@@ -60,7 +60,7 @@ class PHPClassesDetector {
         while ($token = next($tokens)) {
           if (is_array($token) && $token[0] == T_STRING) {
             $class = $token[1];
-            break;
+            break 2;
           }
         }
       }
