@@ -60,8 +60,8 @@ class RouteHandlerTest extends TestCase {
   public function testExecute() {
     $controller = new TestController();
     $routeHandler = new RouteHandler($controller, 'action', ['name' => 'testname']);
-    $routeHandler->execute();
-    $this->expectOutputString('testname');
+    $response = $routeHandler->execute();
+    self::assertEquals($response->getBody(), "Test controller body");
   }
 
 }
