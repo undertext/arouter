@@ -34,7 +34,7 @@ Controller is a class with *@Controller* annotation. Controller's methods annota
     * @Route(path="/example-path")
     */
    public function action() {
-     print 'It works';
+     return new Response(200, "It works'");
      }
    }
  }
