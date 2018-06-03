@@ -67,7 +67,7 @@ class Router {
    *   Annotation based router.
    */
   public static function build(string $controllersDirectory): Router {
-    $router = new Router();
+    $router = new self();
     $router->addArgumentResolvers([
       new RequestArgumentResolver(),
       new RequestParamArgumentResolver(),
