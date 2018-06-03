@@ -49,7 +49,9 @@ Controller is a class with *@Controller* annotation. Controller's methods annota
 
  Method argument can be resolved to GET/POST variable value using @RequestParam annotation.
   ```php
-  @RequestParam (for="page")
+ /**
+  * @RequestParam (for="page")
+  */
   public function list($page) { print "Current page is $page" }
   ```
   So for request URL *some-path?page=3* $page will be resolved to *3*.
@@ -58,7 +60,9 @@ Controller is a class with *@Controller* annotation. Controller's methods annota
  
  If method has placeholders in @Route path like
  ```php
-  @Route (path="/user/{name}")
+ /**
+  * @Route (path="/user/{name}")
+  */  
   public function userProfile($name){}
  ```
   then arguments named as those placeholders will be resolved to placeholder values.
@@ -76,7 +80,9 @@ Controller is a class with *@Controller* annotation. Controller's methods annota
  
  Method argument can be resolved to request body value using @RequestBody annotation.
   ```php
-  @RequestBody (for="body")
+ /**
+  * @RequestBody (for="body")
+  */ 
   public function something($body) { print "Request body is $body" }
   ```
 
@@ -84,7 +90,9 @@ Controller is a class with *@Controller* annotation. Controller's methods annota
  
  Method argument can be resolved to request header value using @RequestHeader annotation.
  ```php
- @RequestHeader (for="userAgent", from="User-Agent")
+ /**
+  * @RequestHeader (for="userAgent", from="User-Agent")
+  */ 
  public function something($userAgent) {}
  ```
 
@@ -92,7 +100,9 @@ Controller is a class with *@Controller* annotation. Controller's methods annota
  
  Method argument can be resolved to a session attribute value using @SessionAttribute annotation.
   ```php
-  @SessionAttribute (for="some")
+ /**
+  * @SessionAttribute (for="some")
+  */ 
   public function something($some) { }
   ```
   
@@ -100,7 +110,9 @@ Controller is a class with *@Controller* annotation. Controller's methods annota
  
  Method argument can be resolved to a cookie value using @CookieValue annotation.
   ```php
-  @CookieValue (for="some")
+ /**
+  * @CookieValue (for="some")
+  */ 
   public function something($some) { }
   ```
   
