@@ -105,7 +105,7 @@ class Router {
       $quotedRoutePathRegex = '/^' . preg_replace('/\\\\{(.*)\\\\}/', '(?<$1>.*)', $quotedRoutePath) . '$/';
       if (preg_match($quotedRoutePathRegex, $requestPath, $matches) !== 0) {
         $controllerName = $routeMapping->getController();
-        $routeHandler = new RouteHandler(new $controllerName, $routeMapping->getMethod(), []);
+        $routeHandler = new RouteHandler($this->getControllerInstance($controllerName), $routeMapping->getMethod(), []);
         $method = new \ReflectionMethod($routeMapping->getController(), $routeMapping->getMethod());
         $methodParams = $method->getParameters();
         $keyedMethodParams = [];
@@ -120,6 +120,19 @@ class Router {
       }
     }
     return NULL;
+  }
+
+  /**
+   * Get controller instance.
+   *
+   * @param string $controllerName
+   *   Full class name of controller class.
+   *
+   * @return object
+   *   Controller instance.
+   */
+  protected function getControllerInstance(string $controllerName) {
+    return new $controllerName;
   }
 
   /**
