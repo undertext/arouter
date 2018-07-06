@@ -49,8 +49,8 @@ class UrlBuilderTest extends TestCase {
    * Tests URL generation from controller and method name.
    */
   public function testFromControllerMethod() {
-    $url = $this->urlBuilder->fromControllerMethod(TestController2::class, 'action2', ['action' => 'view']);
-    self::assertEquals($url, 'testpath2/view');
+    $url = $this->urlBuilder->fromControllerMethod(TestController2::class, 'action2');
+    self::assertEquals($url, 'testpath2');
   }
 
 }

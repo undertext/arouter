@@ -62,7 +62,7 @@ class UrlBuilder {
    * @return string
    *   Generated URL.
    */
-  public function fromControllerMethod(string $controllerClass, string $method, array $args) {
+  public function fromControllerMethod(string $controllerClass, string $method, array $args = []) {
     $annotationReader = new AnnotationReader();
     $reflectionMethod = new \ReflectionMethod($controllerClass, $method);
     $routeAnnotation = $annotationReader->getMethodAnnotation($reflectionMethod, Route::class);
