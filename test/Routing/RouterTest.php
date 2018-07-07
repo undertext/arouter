@@ -3,9 +3,11 @@
 namespace ARouter\Routing;
 
 use ARouter\Routing\Converter\JsonHttpMessageConverter;
+use ARouter\Routing\Exception\RouteHandlerNotFoundException;
 use ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager;
 use ARouter\Routing\Scanner\RouteMappingsScannerInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use ARouter\Routing\Controllers\SubDirectory\TestController2;
@@ -53,17 +55,30 @@ class RouterTest extends TestCase {
   }
 
   /**
+   * Get Request mock object.
+   *
+   * @param string $path
+   *   Request path.
+   *
+   * @return \Psr\Http\Message\RequestInterface
+   */
+  private function getRequestMock($path): RequestInterface {
+    $request = $this->createMock(ServerRequestInterface::class);
+    $uri = $this->createMock(UriInterface::class);
+    $uri->method('getPath')->willReturn($path);
+    $request->method('getUri')->willReturn($uri);
+    return $request;
+  }
+
+  /**
    * Tests route handler mismatch.
    */
   public function testGetNullRouteHandler() {
     $router = new Router();
     $router->addRouteMappings($this->routeMappings);
+    $request = $this->getRequestMock('test-non-matched-path');
 
-    $uri = $this->createMock(UriInterface::class);
-    $uri->method('getPath')->willReturn('test-non-matched-path');
-    $this->request->method('getUri')->willReturn($uri);
-
-    $routeHandler = $router->getRouteHandler($this->request);
+    $routeHandler = $router->getRouteHandler($request);
     self::assertNull($routeHandler);
   }
 
@@ -74,83 +89,53 @@ class RouterTest extends TestCase {
     $argumentResolver = $this->createMock(MethodArgumentResolver::class);
     $argumentResolver->method('resolve')->willReturn([
       'name' => 'testname',
-      'arg1' => 'testarg1'
+      'arg1' => 'testarg1',
     ]);
 
     $router = new Router();
     $router->addRouteMappings($this->routeMappings);
     $router->addArgumentResolvers([$argumentResolver]);
-    $uri = $this->createMock(UriInterface::class);
-    $uri->method('getPath')->willReturn('path1/testname');
-    $this->request->method('getUri')->willReturn($uri);
-    $routeHandler = $router->getRouteHandler($this->request);
+    $request = $this->getRequestMock('path1/testname');
+    $routeHandler = $router->getRouteHandler($request);
     $controller = $routeHandler->getController();
 
     self::assertEquals(get_class($controller), TestController::class);
     self::assertEquals($routeHandler->getKeyedArgs(), [
       'name' => 'testname',
-      'arg1' => 'testarg1'
+      'arg1' => 'testarg1',
     ]);
     self::assertEquals('action', $routeHandler->getMethod());
   }
 
   /**
-   * Tests route handler mismatch.
+   * Tests get response.
    */
-  public function testConvertor() {
-    $testObject = new class {
-
-      public $first = 'a';
-
-      public $second = 'b';
-
-      /**
-       * @return string
-       */
-      public function getFirst(): string {
-        return $this->first;
-      }
-
-      /**
-       * @param string $first
-       */
-      public function setFirst(string $first): void {
-        $this->first = $first;
-      }
-
-      /**
-       * @return string
-       */
-      public function getSecond(): string {
-        return $this->second;
-      }
-
-      /**
-       * @param string $second
-       */
-      public function setSecond(string $second): void {
-        $this->second = $second;
-      }
-    };
-
+  public function testGetResponse() {
+    $testObject = new RouteHandler('Controller', 'method');
 
     $routeHandler = $this->createMock(RouteHandler::class);
     $routeHandler->method('execute')->willReturn($testObject);
 
-    $router = $this->createPartialMock(Router::class,['getRouteHandler']);
+    $router = $this->createPartialMock(Router::class, ['getRouteHandler']);
     $router->setConverterManager(new HttpMessageConverterManager());
-    $router->getConverterManager()->addConverter(new JsonHttpMessageConverter());
-
+    $router->getConverterManager()
+      ->addConverter(new JsonHttpMessageConverter());
 
     $router->method('getRouteHandler')->willReturn($routeHandler);
 
-
-    $uri = $this->createMock(UriInterface::class);
-    $uri->method('getPath')->willReturn('testpath3');
-    $this->request->method('getUri')->willReturn($uri);
-
     $response = $router->getResponse($this->request);
-    self::assertEquals((string) $response->getBody(), '{"first":"a","second":"b"}');
+    self::assertEquals((string) $response->getBody(), '{"controller":"Controller","method":"method","keyedArgs":[]}');
+  }
+
+  /**
+   * Test route not found exception during get response.
+   */
+  public function testGetResponseRouteNotFoundException() {
+    $this->expectException(RouteHandlerNotFoundException::class);
+    $router = $this->createPartialMock(Router::class, ['getRouteHandler']);
+    $router->method('getRouteHandler')->willReturn(NULL);
+
+    $router->getResponse($this->request);
   }
 
 
