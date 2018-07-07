@@ -2,6 +2,8 @@
 
 namespace ARouter\Routing;
 
+use ARouter\Routing\Converter\JsonHttpMessageConverter;
+use ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager;
 use ARouter\Routing\Scanner\RouteMappingsScannerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -91,6 +93,66 @@ class RouterTest extends TestCase {
     ]);
     self::assertEquals('action', $routeHandler->getMethod());
   }
+
+  /**
+   * Tests route handler mismatch.
+   */
+  public function testConvertor() {
+    $testObject = new class {
+
+      public $first = 'a';
+
+      public $second = 'b';
+
+      /**
+       * @return string
+       */
+      public function getFirst(): string {
+        return $this->first;
+      }
+
+      /**
+       * @param string $first
+       */
+      public function setFirst(string $first): void {
+        $this->first = $first;
+      }
+
+      /**
+       * @return string
+       */
+      public function getSecond(): string {
+        return $this->second;
+      }
+
+      /**
+       * @param string $second
+       */
+      public function setSecond(string $second): void {
+        $this->second = $second;
+      }
+    };
+
+
+    $routeHandler = $this->createMock(RouteHandler::class);
+    $routeHandler->method('execute')->willReturn($testObject);
+
+    $router = $this->createPartialMock(Router::class,['getRouteHandler']);
+    $router->setConverterManager(new HttpMessageConverterManager());
+    $router->getConverterManager()->addConverter(new JsonHttpMessageConverter());
+
+
+    $router->method('getRouteHandler')->willReturn($routeHandler);
+
+
+    $uri = $this->createMock(UriInterface::class);
+    $uri->method('getPath')->willReturn('testpath3');
+    $this->request->method('getUri')->willReturn($uri);
+
+    $response = $router->getResponse($this->request);
+    self::assertEquals((string) $response->getBody(), '{"first":"a","second":"b"}');
+  }
+
 
   /**
    * Tests creation of default router.

@@ -2,8 +2,12 @@
 
 namespace ARouter\Routing;
 
+use ARouter\Routing\Exception\ApplicableConvertorNotFoundException;
+use ARouter\Routing\Exception\RouteHandlerNotFoundException;
+use ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager;
 use ARouter\Routing\Scanner\AnnotationRouteMappingsScanner;
 use ARouter\Routing\Scanner\RouteMappingsScannerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ARouter\Routing\Resolver\{
   CookieValueArgumentResolver,
@@ -25,10 +29,8 @@ use ARouter\Routing\Resolver\{
  * ```php
  * // Create router and pick up routes from 'src/Controller' directory.
  * $router = Router::build('src/Controller');
- * // Get route handler based on picked up routes for given request.
- * $handler = $router->getRouteHandler($request);
- * // Finally execute our route handler.
- * $handler->execute();
+ * // Get response for given request.
+ * $response = $router->getResponse($request);
  * ```
  */
 class Router {
@@ -55,6 +57,14 @@ class Router {
   private $argumentsResolvers = [];
 
   /**
+   * HTTP message converter manager.
+   *
+   * @var \ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager
+   */
+  private $converterManager;
+
+
+  /**
    * Build annotation based router.
    *
    * Created router has all provided by this library argument resolvers,
@@ -77,6 +87,7 @@ class Router {
       new RequestHeaderArgumentResolver(),
       new SessionAttributeArgumentResolver(),
     ]);
+    $router->converterManager = new HttpMessageConverterManager();
     $router->scanner = new AnnotationRouteMappingsScanner($controllersDirectory);
     $router->discoverRouteMappings();
     return $router;
@@ -120,6 +131,32 @@ class Router {
       }
     }
     return NULL;
+  }
+
+  /**
+   * Get HTTP response object for given request.
+   *
+   * @param \Psr\Http\Message\ServerRequestInterface $request
+   *   HTTP request.
+   *
+   * @return \Psr\Http\Message\ResponseInterface
+   *   HTTP response object for given request.
+   * @throws \Exception
+   */
+  public function getResponse(ServerRequestInterface $request): ResponseInterface {
+    $routeHandler = $this->getRouteHandler($request);
+    if (empty($routeHandler)) {
+      throw new RouteHandlerNotFoundException();
+    }
+    $result = $routeHandler->execute();
+    if (!$result instanceof ResponseInterface) {
+      $convertor = $this->converterManager->getApplicableConverter($request);
+      if (empty($convertor)) {
+        throw new ApplicableConvertorNotFoundException();
+      }
+      $result = $convertor->toResponse($result);
+    }
+    return $result;
   }
 
   /**
@@ -195,5 +232,25 @@ class Router {
   public function getScanner(): RouteMappingsScannerInterface {
     return $this->scanner;
   }
+
+  /**
+   * Get HTTP message convertor manager.
+   *
+   * @return \ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager
+   */
+  public function getConverterManager(): HttpMessageConverterManager {
+    return $this->converterManager;
+  }
+
+  /**
+   * Set HTTP message convertor manager.
+   *
+   * @param \ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager $converterManager
+   *   HTTP message convertor manager.
+   */
+  public function setConverterManager(HttpMessageConverterManager $converterManager): void {
+    $this->converterManager = $converterManager;
+  }
+
 
 }

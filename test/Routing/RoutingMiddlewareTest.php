@@ -22,13 +22,11 @@ class RoutingMiddlewareTest extends TestCase {
     $routeHandler = $this->createMock(RouteHandler::class);
     $routeHandler->method('execute')->willReturn($response);
     $router = $this->createMock(Router::class);
-    $router->method('getRouteHandler')->willReturn($routeHandler, NULL);
+    $router->method('getResponse')->willReturn($response);
     $routingMiddleware = new RoutingMiddleware($router);
 
     $result = $routingMiddleware->process($request, $delegate);
     self::assertEquals($result, $response);
-    $result = $routingMiddleware->process($request, $delegate);
-    self::assertNull($result);
   }
 
 }

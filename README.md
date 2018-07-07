@@ -7,13 +7,11 @@ Quick example
 ```php
 // Build annotaion based router, find controllers in 'src/Controller' folder.
 $router = Router::build('src/Controller');
-// Get matching route handler.
-$routeHandler = $router->getRouteHandler(ServerRequest::fromGlobals());
-if ($routeHandler) {
-  $response = $routeHandler->execute();
-}
-else {
-  $response = new Response(404, [], "Route not found"); // This is an example of Guzzle HTTP Response usage. 
+// Get response based on request.
+try {
+   $response = $router->getResponse(ServerRequest::fromGlobals());
+} catch (RouteHandlerNotFoundException $e) {
+    $response = new Response(404, [], "Route not found"); // This is an example of Guzzle HTTP Response usage.
 }
 
 outputResponse($response); // outputResponse is a function that converts response to string and output it.

@@ -39,10 +39,6 @@ class RoutingMiddleware implements MiddlewareInterface {
    * {@inheritdoc}
    */
   public function process(ServerRequestInterface $request, DelegateInterface $delegate) {
-    $routeHandler = $this->router->getRouteHandler($request);
-    if ($routeHandler !== NULL) {
-      $response = $routeHandler->execute();
-      return $response;
-    }
+    return $this->router->getResponse($request);
   }
 }

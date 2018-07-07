@@ -114,12 +114,11 @@ class RouteHandler {
   }
 
   /**
-   * Execute route handler and return response.
+   * Execute route handler and return result.
    */
-  public function execute(): ResponseInterface {
+  public function execute() {
     $arguments = $this->convertKeyedArgs($this->keyedArgs);
     $response = call_user_func_array([$this->controller, $this->method], $arguments);
-    assert($response instanceof ResponseInterface, "Controller's method should return Response object.");
     return $response;
   }
 
