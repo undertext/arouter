@@ -123,3 +123,6 @@ Controller is a class with *@Controller* annotation. Controller's methods annota
    ->withMiddleware(new RoutingMiddleware($router));
    $response = $dispatcher->process($request);
    ```
+
+[![Build Status](https://travis-ci.com/undertext/arouter.svg?branch=master)](https://travis-ci.com/undertext/arouter)
+[![codecov](https://codecov.io/gh/undertext/arouter/branch/master/graph/badge.svg)](https://codecov.io/gh/undertext/arouter)
