@@ -114,6 +114,22 @@ Controller is a class with *@Controller* annotation. Controller's methods annota
   public function something($some) { }
   ```
   
+  Building URLs
+  --------------
+  If you need to output URL of some route you can use `UrlBuilder` class.
+  Let's say we have `MyController` class with `actionName` method annotated with 
+  ```php
+     /**
+      * @Route(path="/my-path/{argName}")
+      */
+  ```
+  Then to get the url '/mypath/example' you can run next code:
+  
+  ```php
+  $urlBuilder = new UrlBuilder();
+  $url = $urlBuilder->fromControllerMethod(MyController::class, 'actionName', ['argName' => 'example']);
+  ```
+  
   Router as PSR-15 middleware.
  ----------------------------
   This router provides PSR-15 middleware support.
