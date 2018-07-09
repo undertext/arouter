@@ -17,8 +17,8 @@ class JsonHttpMessageConverter implements HttpMessageConverterInterface {
   private $serializer;
 
 
-  public function getFormat(): string {
-    return 'application/json';
+  public function getFormats(): array {
+    return ['application/json'];
   }
 
   public function __construct() {

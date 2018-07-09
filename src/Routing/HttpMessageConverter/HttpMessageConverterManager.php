@@ -27,11 +27,18 @@ class HttpMessageConverterManager {
   public function getApplicableConverter(RequestInterface $request): ?HttpMessageConverterInterface {
     foreach ($this->converters as $converter) {
       $acceptHeader = $request->getHeader('Accept');
-      $format = $converter->getFormat();
-      if (empty($acceptHeader) || in_array($format, $acceptHeader)) {
+      if (!empty($acceptHeader)) {
+        $acceptHeaderValues = explode(',', $acceptHeader[0]);
+        foreach ($acceptHeaderValues as &$acceptHeaderValue) {
+          $acceptHeaderValue = explode(';', $acceptHeaderValue)[0];
+        }
+      }
+      $formats = $converter->getFormats();
+      if (empty($acceptHeader) || !empty(array_intersect($formats, $acceptHeaderValues))) {
         return $converter;
       }
     }
+    return NULL;
   }
 
   /**

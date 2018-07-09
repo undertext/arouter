@@ -14,11 +14,11 @@ use Psr\Http\Message\ResponseInterface;
 interface HttpMessageConverterInterface {
 
   /**
-   * Get response format supported by this converter.
+   * Get response formats supported by this converter.
    *
-   * @return string
+   * @return string[]
    */
-  public function getFormat(): string;
+  public function getFormats(): array;
 
   /**
    * Covert object to Response object and return it.
