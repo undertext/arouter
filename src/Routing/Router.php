@@ -152,7 +152,7 @@ class Router {
     if (!$result instanceof ResponseInterface) {
       $convertor = $this->converterManager->getApplicableConverter($request);
       if (empty($convertor)) {
-        throw new ApplicableConvertorNotFoundException();
+        throw new ApplicableConvertorNotFoundException($result, $this->converterManager->getConverters());
       }
       $result = $convertor->toResponse($result);
     }
