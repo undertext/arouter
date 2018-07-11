@@ -4,8 +4,10 @@ namespace ARouter\Routing\Exception;
 
 /**
  * Indicates that applicable HTTP message converter was not found.
+ *
+ * @codeCoverageIgnore
  */
-class ApplicableConvertorNotFoundException extends \Exception {
+class ApplicableConverterNotFoundException extends \Exception {
 
   /**
    * Object for conversion.
@@ -22,14 +24,14 @@ class ApplicableConvertorNotFoundException extends \Exception {
   private $converters;
 
   /**
-   * ApplicableConvertorNotFoundException constructor.
+   * ApplicableConverterNotFoundException constructor.
    *
-   * @param object $objectForConvertion
+   * @param object $objectForConversion
    *   Object for conversion.
    * @param \ARouter\Routing\HttpMessageConverter\HttpMessageConverterInterface[] $converters
    *   Available converters.
    */
-  public function __construct($objectForConvertion, $converters) {
+  public function __construct($objectForConversion, $converters) {
     $convertersNames = array_map(function ($converter) {
       return get_class($converter);
     }, $converters);

@@ -2,7 +2,7 @@
 
 namespace ARouter\Routing;
 
-use ARouter\Routing\Exception\ApplicableConvertorNotFoundException;
+use ARouter\Routing\Exception\ApplicableConverterNotFoundException;
 use ARouter\Routing\Exception\RouteHandlerNotFoundException;
 use ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager;
 use ARouter\Routing\Scanner\AnnotationRouteMappingsScanner;
@@ -150,11 +150,11 @@ class Router {
     }
     $result = $routeHandler->execute();
     if (!$result instanceof ResponseInterface) {
-      $convertor = $this->converterManager->getApplicableConverter($request);
-      if (empty($convertor)) {
-        throw new ApplicableConvertorNotFoundException($result, $this->converterManager->getConverters());
+      $converter = $this->converterManager->getApplicableConverter($request);
+      if (empty($converter)) {
+        throw new ApplicableConverterNotFoundException($result, $this->converterManager->getConverters());
       }
-      $result = $convertor->toResponse($result);
+      $result = $converter->toResponse($result);
     }
     return $result;
   }
@@ -234,7 +234,7 @@ class Router {
   }
 
   /**
-   * Get HTTP message convertor manager.
+   * Get HTTP message converter manager.
    *
    * @return \ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager
    */
@@ -243,10 +243,10 @@ class Router {
   }
 
   /**
-   * Set HTTP message convertor manager.
+   * Set HTTP message converter manager.
    *
    * @param \ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager $converterManager
-   *   HTTP message convertor manager.
+   *   HTTP message converter manager.
    */
   public function setConverterManager(HttpMessageConverterManager $converterManager): void {
     $this->converterManager = $converterManager;

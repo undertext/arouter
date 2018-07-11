@@ -3,7 +3,7 @@
 namespace ARouter\Routing;
 
 use ARouter\Routing\Converter\JsonHttpMessageConverter;
-use ARouter\Routing\Exception\ApplicableConvertorNotFoundException;
+use ARouter\Routing\Exception\ApplicableConverterNotFoundException;
 use ARouter\Routing\Exception\RouteHandlerNotFoundException;
 use ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager;
 use ARouter\Routing\Scanner\RouteMappingsScannerInterface;
@@ -145,7 +145,7 @@ class RouterTest extends TestCase {
    * @covers \ARouter\Routing\Router::getResponse()
    */
   public function testConverterNotFoundException() {
-    $this->expectException(ApplicableConvertorNotFoundException::class);
+    $this->expectException(ApplicableConverterNotFoundException::class);
 
     $converterManager = $this->createMock(HttpMessageConverterManager::class);
     $converterManager->method('getApplicableConverter')->willReturn(NULL);
