@@ -38,7 +38,9 @@ class CachedRouter extends Router {
    * Clear route mappings cache.
    */
   public static function clearCache() {
-    unlink(static::$CACHE_FILE_NAME);
+    if (file_exists(static::$CACHE_FILE_NAME)) {
+      unlink(static::$CACHE_FILE_NAME);
+    }
   }
 
   /**

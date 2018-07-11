@@ -13,7 +13,7 @@ class HttpMessageConverterManager {
   /**
    * @var \ARouter\Routing\HttpMessageConverter\HttpMessageConverterInterface[]
    */
-  private $converters;
+  private $converters = [];
 
   /**
    * Pick up the correct converter for incoming request.

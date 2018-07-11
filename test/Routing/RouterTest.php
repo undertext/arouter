@@ -5,10 +5,12 @@ namespace ARouter\Routing;
 use ARouter\Routing\Converter\JsonHttpMessageConverter;
 use ARouter\Routing\Exception\ApplicableConverterNotFoundException;
 use ARouter\Routing\Exception\RouteHandlerNotFoundException;
+use ARouter\Routing\HttpMessageConverter\HttpMessageConverterInterface;
 use ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager;
 use ARouter\Routing\Scanner\RouteMappingsScannerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use ARouter\Routing\Controllers\SubDirectory\TestController2;
@@ -117,10 +119,16 @@ class RouterTest extends TestCase {
     $routeHandler = $this->createMock(RouteHandler::class);
     $routeHandler->method('execute')->willReturn($testObject);
 
+    $response = $this->createMock(ResponseInterface::class);
+    $response->method('getBody')
+      ->willReturn('{"controller":"Controller","method":"method","keyedArgs":[]}');
+    $converter = $this->createMock(HttpMessageConverterInterface::class);
+    $converter->method('toResponse')->willReturn($response);
+
     $router = $this->createPartialMock(Router::class, ['getRouteHandler']);
     $router->setConverterManager(new HttpMessageConverterManager());
     $router->getConverterManager()
-      ->addConverter(new JsonHttpMessageConverter());
+      ->addConverter($converter);
 
     $router->method('getRouteHandler')->willReturn($routeHandler);
 
@@ -135,6 +143,9 @@ class RouterTest extends TestCase {
     $this->expectException(RouteHandlerNotFoundException::class);
     $router = $this->createPartialMock(Router::class, ['getRouteHandler']);
     $router->method('getRouteHandler')->willReturn(NULL);
+    $uri = $this->createMock(UriInterface::class);
+    $uri->method('getPath')->willReturn('/some-path');
+    $this->request->method('getUri')->willReturn($uri);
 
     $router->getResponse($this->request);
   }

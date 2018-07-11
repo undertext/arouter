@@ -40,7 +40,7 @@ class MissingArgumentHandlerException extends \Exception {
    * @param string $parameterName
    *   Method parameter name.
    */
-  public function __construct($controller, $methodName, $parameterName) {
+  public function __construct($controller, string $methodName, string $parameterName) {
     $this->controller = $controller;
     $this->methodName = $methodName;
     $this->parameterName = $parameterName;
@@ -55,7 +55,7 @@ class MissingArgumentHandlerException extends \Exception {
    * @return object
    *   Controller object.
    */
-  public function getController(): object {
+  public function getController() {
     return $this->controller;
   }
 

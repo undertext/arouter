@@ -31,7 +31,7 @@ class ApplicableConverterNotFoundException extends \Exception {
    * @param \ARouter\Routing\HttpMessageConverter\HttpMessageConverterInterface[] $converters
    *   Available converters.
    */
-  public function __construct($objectForConversion, $converters) {
+  public function __construct($objectForConversion, array $converters) {
     $this->converters = $converters;
     $this->objectForConvertion = $objectForConversion;
 
@@ -52,7 +52,7 @@ class ApplicableConverterNotFoundException extends \Exception {
    * @return object
    *   Object for conversion.
    */
-  public function getObjectForConvertion(): object {
+  public function getObjectForConvertion() {
     return $this->objectForConvertion;
   }
 

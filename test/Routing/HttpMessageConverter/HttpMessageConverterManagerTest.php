@@ -16,6 +16,11 @@ class HttpMessageConverterManagerTest extends TestCase {
     $converter2->method('getFormats')->willReturn(['application/json']);
 
     $converterManager = new HttpMessageConverterManager();
+
+    $request = $this->getRequestMock(['text/html']);
+    $converter = $converterManager->getApplicableConverter($request);
+    $this->assertEquals($converter, NULL);
+
     $converterManager->addConverter($converter1);
     $converterManager->addConverter($converter2);
 

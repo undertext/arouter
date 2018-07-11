@@ -146,7 +146,7 @@ class Router {
   public function getResponse(ServerRequestInterface $request): ResponseInterface {
     $routeHandler = $this->getRouteHandler($request);
     if (empty($routeHandler)) {
-      throw new RouteHandlerNotFoundException();
+      throw new RouteHandlerNotFoundException($request);
     }
     $result = $routeHandler->execute();
     if (!$result instanceof ResponseInterface) {
