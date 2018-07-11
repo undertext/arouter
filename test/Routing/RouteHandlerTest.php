@@ -26,7 +26,7 @@ class RouteHandlerTest extends TestCase {
       NULL,
       NULL,
       'testarg1',
-      'defaultarg2'
+      'defaultarg2',
     ]);
 
     $convertedArgs = $routeHandler->convertKeyedArgs([
@@ -38,12 +38,14 @@ class RouteHandlerTest extends TestCase {
       NULL,
       NULL,
       NULL,
-      'testarg2'
+      'testarg2',
     ]);
   }
 
   /**
    * Tests exception in convertKeyedArgs method.
+   *
+   * @covers \ARouter\Routing\RouteHandler::convertKeyedArgs()
    */
   public function testConvertKeyedArgsException() {
     self::expectException(MissingArgumentHandlerException::class);

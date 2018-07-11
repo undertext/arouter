@@ -32,6 +32,9 @@ class ApplicableConverterNotFoundException extends \Exception {
    *   Available converters.
    */
   public function __construct($objectForConversion, $converters) {
+    $this->converters = $converters;
+    $this->objectForConvertion = $objectForConversion;
+
     $convertersNames = array_map(function ($converter) {
       return get_class($converter);
     }, $converters);

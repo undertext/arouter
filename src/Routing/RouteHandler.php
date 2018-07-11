@@ -2,7 +2,6 @@
 
 namespace ARouter\Routing;
 
-use Psr\Http\Message\ResponseInterface;
 use ReflectionMethod;
 use ARouter\Routing\Exception\MissingArgumentHandlerException;
 
@@ -104,9 +103,7 @@ class RouteHandler {
           $convertedArgs[] = $param->getDefaultValue();
         }
         else {
-          $controllerClass = get_class($this->controller);
-          throw new MissingArgumentHandlerException("Missing {$param->getName()} argument for
-          {$controllerClass}::{$this->method}");
+          throw new MissingArgumentHandlerException($this->controller, $this->method, $param->getName());
         }
       }
     }
