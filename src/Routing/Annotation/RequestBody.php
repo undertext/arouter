@@ -4,11 +4,10 @@ namespace ARouter\Routing\Annotation;
 
 use Doctrine\Common\Annotations\Annotation\Required;
 
-
 /**
  * Annotation that allows to bind a method parameter to the body of web request.
  *
- * You can see how method argument $json is assigned to a JSON web request body
+ * You can see how method parameter $json is assigned to a JSON web request body
  * in next example:
  *   ```php
  * @RequestBody (for="json")
@@ -21,7 +20,7 @@ use Doctrine\Common\Annotations\Annotation\Required;
 class RequestBody {
 
   /**
-   * Method argument name.
+   * Method parameter name.
    *
    * @Required
    * @var string

@@ -5,9 +5,9 @@ namespace ARouter\Routing\Annotation;
 use Doctrine\Common\Annotations\Annotation\Required;
 
 /**
- * Annotation that allows to bind cookie value to method argument.
+ * Annotation that allows to bind cookie value to method parameter.
  *
- * You can see how method argument $user is assigned to a $_COOKIE['user']
+ * You can see how method parameter $user is assigned to a $_COOKIE['user']
  * in next example:
  *   ```php
  * @CookieValue (for="user")
@@ -26,7 +26,7 @@ use Doctrine\Common\Annotations\Annotation\Required;
 class CookieValue {
 
   /**
-   * Method argument name.
+   * Method parameter name.
    *
    * @Required
    * @var string

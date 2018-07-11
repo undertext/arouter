@@ -7,13 +7,13 @@ use Doctrine\Common\Annotations\Annotation\Required;
 /**
  * Annotation that allows to bind a method parameter to a web request parameter.
  *
- * You can see how method argument $page is assigned to a request parameter
+ * You can see how method parameter $page is assigned to a request parameter
  * from 'example.com/list?page=2' URL in next example:
  *   ```php
  * @RequestParam (for="page")
  * public function list($page) { print "Current page is $page" }
  * ```
- * If the name of request parameter is different from argument name
+ * If the name of request parameter is different from method parameter name
  * (example.com/list?pageNum=2) you can use next syntax:
  *   ```php
  * @RequestParam (for="page", from = "pageNum")
@@ -29,7 +29,7 @@ use Doctrine\Common\Annotations\Annotation\Required;
 class RequestParam {
 
   /**
-   * Method argument name.
+   * Method parameter name.
    *
    * @Required
    * @var string
