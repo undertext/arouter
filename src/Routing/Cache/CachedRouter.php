@@ -8,6 +8,8 @@ use ARouter\Routing\Router;
  * Cache discovered route mappings to a file.
  *
  * Significantly speeds up route mappings discovery.
+ * In order to clear cached mappings
+ * you need to call `CachedRouter::clearCache()` static method.
  */
 class CachedRouter extends Router {
 
@@ -16,7 +18,7 @@ class CachedRouter extends Router {
    *
    * @var string
    */
-  private static $CACHE_FILE_NAME = 'cached_route_mappings.data';
+  public static $CACHE_FILE_NAME = 'cached_route_mappings.data';
 
   /**
    * {@inheritdoc}
@@ -33,9 +35,9 @@ class CachedRouter extends Router {
   }
 
   /**
-   * Reset route mappings cache.
+   * Clear route mappings cache.
    */
-  public static function resetCache() {
+  public static function clearCache() {
     unlink(static::$CACHE_FILE_NAME);
   }
 
