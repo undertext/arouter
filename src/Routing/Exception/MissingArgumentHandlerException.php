@@ -4,8 +4,6 @@ namespace ARouter\Routing\Exception;
 
 /**
  * Indicates that RouteHandler have less method arguments than needed.
- *
- * @codeCoverageIgnore
  */
 class MissingArgumentHandlerException extends \Exception {
 

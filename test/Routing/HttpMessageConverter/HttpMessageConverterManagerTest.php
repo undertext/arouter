@@ -8,6 +8,20 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class HttpMessageConverterManagerTest extends TestCase {
 
+  /**
+   * Get Request mock object.
+   *
+   * @param string $path
+   *   Request path.
+   *
+   * @return \Psr\Http\Message\RequestInterface
+   */
+  private function getRequestMock($acceptHeader): RequestInterface {
+    $request = $this->createMock(ServerRequestInterface::class);
+    $request->method('getHeader')->willReturn($acceptHeader);
+    return $request;
+  }
+
   public function testGetApplicableConverter() {
     $converter1 = $this->createMock(HttpMessageConverterInterface::class);
     $converter1->method('getFormats')->willReturn(['text/html']);
@@ -32,20 +46,6 @@ class HttpMessageConverterManagerTest extends TestCase {
     $converter = $converterManager->getApplicableConverter($request);
     $this->assertEquals($converter, $converter2);
 
-  }
-
-  /**
-   * Get Request mock object.
-   *
-   * @param string $path
-   *   Request path.
-   *
-   * @return \Psr\Http\Message\RequestInterface
-   */
-  private function getRequestMock($acceptHeader): RequestInterface {
-    $request = $this->createMock(ServerRequestInterface::class);
-    $request->method('getHeader')->willReturn($acceptHeader);
-    return $request;
   }
 
 }

@@ -4,8 +4,6 @@ namespace ARouter\Routing\Exception;
 
 /**
  * Indicates that applicable HTTP message converter was not found.
- *
- * @codeCoverageIgnore
  */
 class ApplicableConverterNotFoundException extends \Exception {
 

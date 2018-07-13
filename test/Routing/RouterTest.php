@@ -90,13 +90,11 @@ class RouterTest extends TestCase {
    * Tests route handler match.
    */
   public function testGetRouteHandler() {
-    $argumentResolver = $this->createMock(MethodArgumentResolver::class);
-    $argumentResolver->method('resolve')->willReturn([
+    $argumentResolversManager = $this->createMock(MethodArgumentsResolverService::class);
+    $argumentResolversManager->method('resolveArguments')->willReturn([
       'name' => 'testname',
       'arg1' => 'testarg1',
     ]);
-    $argumentResolversManager = new MethodArgumentsResolverService();
-    $argumentResolversManager->addArgumentResolvers([$argumentResolver]);
 
     $router = new Router();
     $router->addRouteMappings($this->routeMappings);
@@ -143,14 +141,18 @@ class RouterTest extends TestCase {
    * Test route not found exception during get response.
    */
   public function testGetResponseRouteNotFoundException() {
-    $this->expectException(RouteHandlerNotFoundException::class);
     $router = $this->createPartialMock(Router::class, ['getRouteHandler']);
     $router->method('getRouteHandler')->willReturn(NULL);
     $uri = $this->createMock(UriInterface::class);
     $uri->method('getPath')->willReturn('/some-path');
     $this->request->method('getUri')->willReturn($uri);
 
-    $router->getResponse($this->request);
+    try {
+      $router->getResponse($this->request);
+      $this->fail();
+    } catch (RouteHandlerNotFoundException $ex) {
+      $this->assertEquals($ex->getRequest(), $this->request);
+    }
   }
 
   /**
@@ -159,8 +161,6 @@ class RouterTest extends TestCase {
    * @covers \ARouter\Routing\Router::getResponse()
    */
   public function testConverterNotFoundException() {
-    $this->expectException(ApplicableConverterNotFoundException::class);
-
     $converterManager = $this->createMock(HttpMessageConverterManager::class);
     $converterManager->method('getApplicableConverter')->willReturn(NULL);
 
@@ -171,7 +171,14 @@ class RouterTest extends TestCase {
     $router->setConverterManager($converterManager);
     $router->method('getRouteHandler')->willReturn($routeHandler);
 
-    $router->getResponse($this->request);
+    try {
+      $router->getResponse($this->request);
+      $this->fail();
+    } catch (ApplicableConverterNotFoundException $ex) {
+      $this->assertEquals($ex->getObjectForConvertion(), 'Not response object');
+      $this->assertEquals($ex->getConverters(), []);
+    }
+
   }
 
 

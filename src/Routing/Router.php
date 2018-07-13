@@ -138,7 +138,11 @@ class Router {
    *
    * @return \Psr\Http\Message\ResponseInterface
    *   HTTP response object for given request.
-   * @throws \Exception
+   *
+   * @throws \ARouter\Routing\Exception\ApplicableConverterNotFoundException
+   *   When applicable converter is not found.
+   * @throws \ARouter\Routing\Exception\RouteHandlerNotFoundException
+   *   When route handler is not found.
    */
   public function getResponse(ServerRequestInterface $request): ResponseInterface {
     $routeHandler = $this->getRouteHandler($request);

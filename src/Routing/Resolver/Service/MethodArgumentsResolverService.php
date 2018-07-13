@@ -8,7 +8,7 @@ class MethodArgumentsResolverService {
 
   /**
    * @param $controller
-   * @param $methodName
+   * @param \ReflectionProperty[] $methodParams
    *
    * @return mixed
    * @throws \ReflectionException
@@ -17,7 +17,7 @@ class MethodArgumentsResolverService {
     $resolvedArguments = [];
     $keyedMethodParams = [];
     foreach ($methodParams as $methodParam) {
-      $keyedMethodParams[$methodParam->name] = $methodParam;
+      $keyedMethodParams[$methodParam->getName()] = $methodParam;
     }
     foreach ($this->argumentResolvers as $argumentResolver) {
       $resolvedArguments = array_merge($resolvedArguments, $argumentResolver->resolve($keyedMethodParams, $routeMapping, $request));

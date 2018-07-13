@@ -44,16 +44,20 @@ class RouteHandlerTest extends TestCase {
 
   /**
    * Tests exception in convertKeyedArgs method.
-   *
-   * @covers \ARouter\Routing\RouteHandler::convertKeyedArgs()
    */
   public function testConvertKeyedArgsException() {
-    self::expectException(MissingArgumentHandlerException::class);
     $controller = new TestController();
     $routeHandler = new RouteHandler($controller, 'action');
-    $routeHandler->convertKeyedArgs([
-      'arg2' => 'testarg2',
-    ]);
+    try {
+      $routeHandler->convertKeyedArgs([
+        'arg2' => 'testarg2',
+      ]);
+      $this->fail();
+    } catch (MissingArgumentHandlerException $ex) {
+      $this->assertEquals($ex->getController(), $controller);
+      $this->assertEquals($ex->getMethodName(), 'action');
+      $this->assertEquals($ex->getParameterName(), 'name');
+    }
   }
 
   /**
