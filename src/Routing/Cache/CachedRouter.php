@@ -43,7 +43,7 @@ class CachedRouter extends Router {
   public function discoverRouteMappings(): void {
     $cachedRouteMappings = $this->getRouteMappingsFromCache();
     if (!empty($cachedRouteMappings)) {
-      $this->addRouteMappings($cachedRouteMappings);
+      $this->routeMappings = $cachedRouteMappings;
     }
     else {
       parent::discoverRouteMappings();

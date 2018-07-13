@@ -41,7 +41,7 @@ class Router {
    *
    * @var \ARouter\Routing\RouteMapping[]
    */
-  private $routeMappings = [];
+  protected $routeMappings = [];
 
   /**
    * Method arguments resolver manager.
@@ -93,7 +93,7 @@ class Router {
    * Discover mappings between routes and controller action methods.
    */
   public function discoverRouteMappings(): void {
-    $this->routeMappings = array_merge($this->routeMappings, $this->scanner->discoverRouteMappings());
+    $this->routeMappings = $this->scanner->discoverRouteMappings();
   }
 
   /**
