@@ -7,9 +7,9 @@ use ARouter\Routing\Router;
 /**
  * Cache discovered route mappings to a file.
  *
- * Significantly speeds up route mappings discovery.
+ * Significantly speeds up the router.
  * In order to clear cached mappings
- * you need to call `CachedRouter::clearCache()` static method.
+ * you need to call `CachedRouter::clearCache()` method.
  */
 class CachedRouter extends Router {
 
@@ -18,7 +18,24 @@ class CachedRouter extends Router {
    *
    * @var string
    */
-  public static $CACHE_FILE_NAME = 'cached_route_mappings.data';
+  private $cacheFileName = 'cachedRouteMappings.data';
+
+  /**
+   * CachedRouter constructor.
+   *
+   * @param string $cacheFileName
+   *   Cache file name.
+   * @param bool $resetCache
+   *   Resets the cache if set to true.
+   */
+  public function __construct(string $cacheFileName = NULL, $resetCache = FALSE) {
+    if (!empty($cacheFileName)) {
+      $this->cacheFileName = $cacheFileName;
+    }
+    if ($resetCache) {
+      $this->clearCache();
+    }
+  }
 
   /**
    * {@inheritdoc}
@@ -37,9 +54,9 @@ class CachedRouter extends Router {
   /**
    * Clear route mappings cache.
    */
-  public static function clearCache() {
-    if (file_exists(static::$CACHE_FILE_NAME)) {
-      unlink(static::$CACHE_FILE_NAME);
+  public function clearCache() {
+    if (file_exists($this->cacheFileName)) {
+      unlink($this->cacheFileName);
     }
   }
 
@@ -47,8 +64,8 @@ class CachedRouter extends Router {
    * Get cached route mappings if they exists.
    */
   private function getRouteMappingsFromCache() {
-    if (file_exists(static::$CACHE_FILE_NAME)) {
-      $routeMappings = unserialize(file_get_contents(static::$CACHE_FILE_NAME));
+    if (file_exists($this->cacheFileName)) {
+      $routeMappings = unserialize(file_get_contents($this->cacheFileName));
       return $routeMappings;
     }
     return NULL;
@@ -58,7 +75,27 @@ class CachedRouter extends Router {
    * Save discovered route mappings to the cache.
    */
   private function saveRouteMappingsToCache() {
-    file_put_contents(static::$CACHE_FILE_NAME, serialize($this->getRouteMappings()));
+    file_put_contents($this->cacheFileName, serialize($this->getRouteMappings()));
+  }
+
+  /**
+   * Get cache file name.
+   *
+   * @return string
+   *   Cache file name.
+   */
+  public function getCacheFileName(): string {
+    return $this->cacheFileName;
+  }
+
+  /**
+   * Set cache file name.
+   *
+   * @param string $cacheFileName
+   *   Cache file name.
+   */
+  public function setCacheFileName(string $cacheFileName): void {
+    $this->cacheFileName = $cacheFileName;
   }
 
 }

@@ -10,13 +10,7 @@ use ARouter\Routing\Scanner\RouteMappingsScannerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ARouter\Routing\Resolver\{
-  CookieValueArgumentResolver,
-  RequestArgumentResolver,
-  PathArgumentResolver,
-  RequestBodyArgumentResolver,
-  RequestHeaderArgumentResolver,
-  RequestParamArgumentResolver,
-  SessionAttributeArgumentResolver
+  CookieValueArgumentResolver, Service\MethodArgumentsResolverService, RequestArgumentResolver, PathArgumentResolver, RequestBodyArgumentResolver, RequestHeaderArgumentResolver, RequestParamArgumentResolver, SessionAttributeArgumentResolver
 };
 
 /**
@@ -50,11 +44,12 @@ class Router {
   private $routeMappings = [];
 
   /**
-   * Action method arguments resolver.
+   * Method arguments resolver manager.
    *
-   * @var \ARouter\Routing\Resolver\MethodArgumentResolver[]
+   * @var \ARouter\Routing\Resolver\Service\MethodArgumentsResolverService
    */
-  private $argumentsResolvers = [];
+  private $argumentsResolverService;
+
 
   /**
    * HTTP message converter manager.
@@ -76,9 +71,10 @@ class Router {
    * @return \ARouter\Routing\Router
    *   Annotation based router.
    */
-  public static function build(string $controllersDirectory): Router {
-    $router = new static();
-    $router->addArgumentResolvers([
+  public static function build(string $controllersDirectory, ...$options): Router {
+    $router = new static(...$options);
+    $router->argumentsResolverService = new MethodArgumentsResolverService();
+    $router->argumentsResolverService->addArgumentResolvers([
       new RequestArgumentResolver(),
       new RequestParamArgumentResolver(),
       new PathArgumentResolver(),
@@ -110,24 +106,25 @@ class Router {
    *   Route handler for given request or NULL if there is no matching handler.
    */
   public function getRouteHandler(ServerRequestInterface $request) {
+    $matchingRouteMapping = $this->getMatchingRouteMapping($request);
+    if (!empty($matchingRouteMapping)) {
+      $controllerName = $matchingRouteMapping->getController();
+      $routeHandler = new RouteHandler($this->getControllerInstance($controllerName), $matchingRouteMapping->getMethod(), []);
+      $method = new \ReflectionMethod($matchingRouteMapping->getController(), $matchingRouteMapping->getMethod());
+      $resolvedArguments = $this->argumentsResolverService->resolveArguments($method->getParameters(), $matchingRouteMapping, $request);
+      $routeHandler->addArguments($resolvedArguments);
+      return $routeHandler;
+    }
+    return NULL;
+  }
+
+  private function getMatchingRouteMapping(ServerRequestInterface $request) {
     $requestPath = $request->getUri()->getPath();
     foreach ($this->routeMappings as $routeMapping) {
       $quotedRoutePath = preg_quote($routeMapping->getPath(), '/');
       $quotedRoutePathRegex = '/^' . preg_replace('/\\\\{(.*)\\\\}/', '(?<$1>.*)', $quotedRoutePath) . '$/';
       if (preg_match($quotedRoutePathRegex, $requestPath, $matches) !== 0) {
-        $controllerName = $routeMapping->getController();
-        $routeHandler = new RouteHandler($this->getControllerInstance($controllerName), $routeMapping->getMethod(), []);
-        $method = new \ReflectionMethod($routeMapping->getController(), $routeMapping->getMethod());
-        $methodParams = $method->getParameters();
-        $keyedMethodParams = [];
-        foreach ($methodParams as $methodParam) {
-          $keyedMethodParams[$methodParam->name] = $methodParam;
-        }
-        foreach ($this->argumentsResolvers as $argumentResolver) {
-          $resolvedArguments = $argumentResolver->resolve($keyedMethodParams, $routeMapping, $request);
-          $routeHandler->addArguments($resolvedArguments);
-        }
-        return $routeHandler;
+        return $routeMapping;
       }
     }
     return NULL;
@@ -193,24 +190,16 @@ class Router {
     return $this->routeMappings;
   }
 
-  /**
-   * Add arguments resolvers to router.
-   *
-   * @param \ARouter\Routing\Resolver\MethodArgumentResolver[] $argumentResolvers
-   *   Arguments resolvers.
-   */
-  public function addArgumentResolvers(array $argumentResolvers) {
-    $this->argumentsResolvers = array_merge($this->argumentsResolvers, $argumentResolvers);
+
+  public function setArgumentsResolverService($argumentsResolverService) {
+    $this->argumentsResolverService = $argumentsResolverService;
   }
 
   /**
-   * Get arguments resolvers from router.
-   *
-   * @return \ARouter\Routing\Resolver\MethodArgumentResolver[]
-   *   Arguments resolvers from router.
+   * @return \ARouter\Routing\Resolver\Service\MethodArgumentsResolverService
    */
-  public function getArgumentsResolvers(): array {
-    return $this->argumentsResolvers;
+  public function getArgumentsResolverService(): MethodArgumentsResolverService {
+    return $this->argumentsResolverService;
   }
 
   /**

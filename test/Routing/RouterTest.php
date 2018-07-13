@@ -7,6 +7,7 @@ use ARouter\Routing\Exception\ApplicableConverterNotFoundException;
 use ARouter\Routing\Exception\RouteHandlerNotFoundException;
 use ARouter\Routing\HttpMessageConverter\HttpMessageConverterInterface;
 use ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager;
+use ARouter\Routing\Resolver\Service\MethodArgumentsResolverService;
 use ARouter\Routing\Scanner\RouteMappingsScannerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -94,10 +95,12 @@ class RouterTest extends TestCase {
       'name' => 'testname',
       'arg1' => 'testarg1',
     ]);
+    $argumentResolversManager = new MethodArgumentsResolverService();
+    $argumentResolversManager->addArgumentResolvers([$argumentResolver]);
 
     $router = new Router();
     $router->addRouteMappings($this->routeMappings);
-    $router->addArgumentResolvers([$argumentResolver]);
+    $router->setArgumentsResolverService($argumentResolversManager);
     $request = $this->getRequestMock('path1/testname');
     $routeHandler = $router->getRouteHandler($request);
     $controller = $routeHandler->getController();
@@ -187,7 +190,7 @@ class RouterTest extends TestCase {
     self::assertEquals($routeMappings[0]->getMethod(), 'action2');
     self::assertEquals($routeMappings[1]->getMethod(), 'action');
 
-    $resolvers = $router->getArgumentsResolvers();
+    $resolvers = $router->getArgumentsResolverService()->getArgumentResolvers();
 
     self::assertInstanceOf(RequestArgumentResolver::class, $resolvers[0]);
     self::assertInstanceOf(RequestParamArgumentResolver::class, $resolvers[1]);

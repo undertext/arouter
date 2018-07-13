@@ -31,17 +31,16 @@ class CachedRouterTest extends TestCase {
    * @covers \ARouter\Routing\Cache\CachedRouter
    */
   public function testCachedRouter() {
-    CachedRouter::clearCache();
-    $cachedRouter = CachedRouter::build('test/Routing/Controllers');
+    $cachedRouter = CachedRouter::build('test/Routing/Controllers', 'testCachedRoutes.php', TRUE);
     $router = Router::build('test/Routing/Controllers');
     $this->assertEquals($cachedRouter->getRouteMappings(), $router->getRouteMappings());
-    $this->assertFileExists(CachedRouter::$CACHE_FILE_NAME);
+    $this->assertFileExists($cachedRouter->getCacheFileName());
     $mappingsFromCache = $this->invokeMethod($cachedRouter, 'getRouteMappingsFromCache');
     $this->assertNotEmpty($mappingsFromCache);
     $this->assertEquals($mappingsFromCache, $router->getRouteMappings());
 
-    CachedRouter::clearCache();
-    $this->assertFileNotExists(CachedRouter::$CACHE_FILE_NAME);
+    $cachedRouter->clearCache();
+    $this->assertFileNotExists($cachedRouter->getCacheFileName());
   }
 
 }
