@@ -33,8 +33,6 @@ class CachedRouterTest extends TestCase {
 
   /**
    * Tests that cached router behave in the same way as default router.
-   *
-   * @covers \ARouter\Routing\Cache\CachedRouter
    */
   public function testCachedRouter() {
     /** @var \ARouter\Routing\Cache\CachedRouter $cachedRouter */

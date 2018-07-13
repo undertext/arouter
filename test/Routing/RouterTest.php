@@ -157,8 +157,6 @@ class RouterTest extends TestCase {
 
   /**
    * Test route not found exception during get response.
-   *
-   * @covers \ARouter\Routing\Router::getResponse()
    */
   public function testConverterNotFoundException() {
     $converterManager = $this->createMock(HttpMessageConverterManager::class);

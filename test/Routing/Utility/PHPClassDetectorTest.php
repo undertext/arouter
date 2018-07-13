@@ -1,15 +1,12 @@
 <?php
 
-namespace ARouter\Routing;
+namespace ARouter\Routing\Utility;
 
-use ARouter\Routing\Utility\PHPClassesDetector;
 use PHPUnit\Framework\TestCase;
 use ARouter\Routing\Controllers\SubDirectory\TestController2;
 use ARouter\Routing\Controllers\TestController;
 
-
-class PathBasedClassScannerTest extends TestCase {
-
+class PHPClassDetectorTest extends TestCase {
 
   public function testScan() {
     $pathBasedClassScanner = new PHPClassesDetector();
