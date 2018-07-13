@@ -7,7 +7,7 @@
   "require": {
     "doctrine/annotations": "1.4.*",
     "psr/http-message": "^1.0",
-    "http-interop/http-middleware": "^0.4.1"
+    "psr/http-server-middleware": "^1.0"
   },
   "autoload": {
     "psr-4": {

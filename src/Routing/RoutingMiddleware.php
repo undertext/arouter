@@ -2,9 +2,10 @@
 
 namespace ARouter\Routing;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * PSR-15 middleware for routing.
@@ -38,7 +39,7 @@ class RoutingMiddleware implements MiddlewareInterface {
   /**
    * {@inheritdoc}
    */
-  public function process(ServerRequestInterface $request, DelegateInterface $delegate) {
+  public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
     return $this->router->getResponse($request);
   }
 }
