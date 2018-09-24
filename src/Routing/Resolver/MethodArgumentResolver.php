@@ -6,7 +6,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use ARouter\Routing\RouteMapping;
 
 /**
- * Interface for classes that want to resolve action method arguments
+ * @defgroup argument_resolvers Argument resolvers
+ *
+ * Argument resolvers are designed to map data from incoming Request to
+ * controller method parameters using annotations.
+ */
+
+/**
+ * Interface for classes that want to resolve method arguments
  * based on incoming HTTP request.
  */
 interface MethodArgumentResolver {

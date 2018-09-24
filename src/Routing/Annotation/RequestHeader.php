@@ -5,17 +5,25 @@ namespace ARouter\Routing\Annotation;
 use Doctrine\Common\Annotations\Annotation\Required;
 
 /**
- * Annotation that allows to bind a method parameter to the request header.
+ * @addtogroup argument_resolvers
+ *
+ * ## Request header resolver
+ * `RequestHeader` annotation allows to bind a method parameter to the request
+ *   header.
  *
  * You can see how method parameter $userAgent is assigned to a 'User-Agent'
  * header in next example:
- *   ```php
+ * ```php
  * @RequestHeader (for="userAgent", from="User-Agent")
  * public function something($userAgent) {}
  * ```
- *
+ */
+
+/**
  * @Annotation
  * @Target("ALL")
+ *
+ * @see \ARouter\Routing\Resolver\RequestHeaderArgumentResolver
  */
 class RequestHeader {
 
@@ -34,16 +42,5 @@ class RequestHeader {
    * @var string
    */
   public $from;
-
-  /**
-   * RequestHeader constructor.
-   *
-   * @param array $options
-   *   Annotation values.
-   */
-  public function __construct(array $options) {
-    $this->for = $options['for'];
-    $this->from = $options['from'] ?? $options['for'];
-  }
 
 }

@@ -35,7 +35,6 @@ class RouteMapping {
    */
   private $annotations;
 
-
   /**
    * RouteMapping constructor.
    *

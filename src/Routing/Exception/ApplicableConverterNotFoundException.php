@@ -3,7 +3,15 @@
 namespace ARouter\Routing\Exception;
 
 /**
+ * @addtogroup exceptions
+ *
+ * ## ApplicableConverterNotFoundException
  * Indicates that applicable HTTP message converter was not found.
+ * Happens when controller method returns something else than ResponseInterface
+ * object and applicable converter is not registered in router.
+ * You can pass custom converters on `Router::getRouter()` call.
+ *
+ * @see HttpMessageConverterManager
  */
 class ApplicableConverterNotFoundException extends \Exception {
 
@@ -12,7 +20,7 @@ class ApplicableConverterNotFoundException extends \Exception {
    *
    * @var object
    */
-  private $objectForConvertion;
+  private $objectForConversion;
 
   /**
    * Available converters.
@@ -30,17 +38,17 @@ class ApplicableConverterNotFoundException extends \Exception {
    *   Available converters.
    */
   public function __construct($objectForConversion, array $converters) {
+    $this->objectForConversion = $objectForConversion;
     $this->converters = $converters;
-    $this->objectForConvertion = $objectForConversion;
 
-    $convertersNames = array_map(function ($converter) {
+    $convertersNamesMessage = array_map(function ($converter) {
       return get_class($converter);
     }, $converters);
-    $convertersNames = implode(',', $convertersNames);
-    if (empty($convertersNames)) {
-      $convertersNames = 'There are no converters';
+    $convertersNamesMessage = implode(',', $convertersNamesMessage);
+    if (empty($convertersNamesMessage)) {
+      $convertersNamesMessage = 'There are no converters';
     }
-    $message = "Applicable HTTP message Converter not found. Available converters : $convertersNames";
+    $message = "Applicable HTTP message Converter not found. Available converters : $convertersNamesMessage";
     parent::__construct($message);
   }
 
@@ -50,8 +58,8 @@ class ApplicableConverterNotFoundException extends \Exception {
    * @return object
    *   Object for conversion.
    */
-  public function getObjectForConvertion() {
-    return $this->objectForConvertion;
+  public function getObjectForConversion() {
+    return $this->objectForConversion;
   }
 
   /**

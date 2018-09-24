@@ -5,17 +5,26 @@ namespace ARouter\Routing\Annotation;
 use Doctrine\Common\Annotations\Annotation\Required;
 
 /**
- * Annotation that allows to bind a method parameter to the body of web request.
+ * @addtogroup argument_resolvers
  *
- * You can see how method parameter $json is assigned to a JSON web request body
+ * ## Request body resolver
+ * `RequestBody` annotation allows to bind a method parameter to the body of
+ *   web request.
+ *
+ * You can see how method parameter $json is assigned to a JSON web request
+ *   body
  * in next example:
- *   ```php
+ * ```php
  * @RequestBody (for="json")
  * public function something($json) { $decoded_json = json_decode($json); }
  * ```
- *
+ */
+
+/**
  * @Annotation
  * @Target("ALL")
+ *
+ * @see \ARouter\Routing\Resolver\RequestBodyArgumentResolver
  */
 class RequestBody {
 

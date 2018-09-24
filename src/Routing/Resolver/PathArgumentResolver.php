@@ -6,7 +6,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use ARouter\Routing\RouteMapping;
 
 /**
- * Resolve request path arguments.
+ * @addtogroup routes_declaring
+ *
+ * ## Path arguments
  *
  * If action method has placeholders in @Route path like
  * ```php
@@ -15,6 +17,10 @@ use ARouter\Routing\RouteMapping;
  * ```
  * then arguments named as those placeholders will be resolved to placeholder
  * values.
+ */
+
+/**
+ * Resolve request path arguments.
  */
 class PathArgumentResolver implements MethodArgumentResolver {
 

@@ -5,23 +5,31 @@ namespace ARouter\Routing\Annotation;
 use Doctrine\Common\Annotations\Annotation\Required;
 
 /**
- * Annotation that allows to bind a session attribute to method parameter.
+ * @addtogroup argument_resolvers
+ *
+ * ## Session attribute resolver
+ * `SessionAttribute` annotation allows to bind a session attribute to method
+ *   parameter.
  *
  * You can see how method parameter $user is assigned to a $_SESSION['user']
  * in next example:
- *   ```php
+ * ```php
  * @SessionAttribute (for="user")
  * public function sayHello($user) {}
  * ```
  * If the name of session attribute is different from parameter name
  * (e.g. $_SESSION['user_value']) use next syntax:
- *   ```php
+ * ```php
  * @SessionAttribute (for="user", from="user_value")
  * public function sayHello($user) {}
  * ```
- *
+ */
+
+/**
  * @Annotation
  * @Target("METHOD")
+ *
+ * @see \ARouter\Routing\Resolver\SessionAttributeArgumentResolver
  */
 class SessionAttribute {
 

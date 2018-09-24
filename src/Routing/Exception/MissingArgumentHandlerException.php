@@ -3,7 +3,15 @@
 namespace ARouter\Routing\Exception;
 
 /**
+ * @addtogroup exceptions
+ *
+ * ## MissingArgumentHandlerException
  * Indicates that RouteHandler have less method arguments than needed.
+ * Happens when Request object do not have all required data to execute a
+ * `RouteHandler`. Check the correctness of your request and correctness
+ * of controller method annotations.
+ *
+ * @see MethodArgumentsResolverService
  */
 class MissingArgumentHandlerException extends \Exception {
 

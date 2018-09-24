@@ -5,22 +5,35 @@ namespace ARouter\Routing\Annotation;
 use Doctrine\Common\Annotations\Annotation\Required;
 
 /**
- * Annotation for mapping web requests onto specific handler methods.
+ * @addtogroup routes_declaring
+ *
+ *  ## Route annotation
+ *  `Route` annotation is used for mapping web requests onto specific handler
+ *   methods.
  *
  * Here is an example of simple controller with mapping of 'contacts()' method
  * to path '/contacts':
- *```php
+ * ```php
+ * @Controller
  * class MyController {
- * /**
- *  * @Route (path="/contacts", method="GET")
- *  * /
- * public function contacts() {
- *  echo 'This is our contacts page.';
+ *
+ *   @Route (path="/contacts", method="GET")
+ *   public function contacts() {
+ *    echo 'This is our contacts page.';
+ *   }
  *  }
- * }
+ * ```
+ *
+ * If you do not specify "method" then GET will be used by default.
+ *
+ */
+
+/**
  *
  * @Annotation
  * @Target("METHOD")
+ *
+ * @see \ARouter\Routing\Scanner\AnnotationRouteMappingsScanner
  */
 class Route {
 
@@ -35,7 +48,8 @@ class Route {
   /**
    * Web request method.
    *
-   * @Enum({"GET", "POST", "HEAD", "OPTIONS", "PUT", "PATCH", "DELETE", "TRACE"})
+   * @Enum({"GET", "POST", "HEAD", "OPTIONS", "PUT", "PATCH", "DELETE",
+   *   "TRACE"})
    */
-  public $method;
+  public $method = "GET";
 }

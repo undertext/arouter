@@ -22,12 +22,12 @@ use ARouter\Routing\Resolver\{
  * Here is a basic example of using the Router class.
  * ```php
  * // Create router and pick up routes from 'src/Controller' directory.
- * $router = Router::build('src/Controller');
+ * $router = RouterFactory::getRouter('src/Controller');
  * // Get response for given request.
  * $response = $router->getResponse($request);
  * ```
  */
-class Router {
+class Router implements RouterInterface {
 
   /**
    * Route mappings scanner.
@@ -41,7 +41,7 @@ class Router {
    *
    * @var \ARouter\Routing\RouteMapping[]
    */
-  protected $routeMappings = [];
+  protected $routeMappings = NULL;
 
   /**
    * Method arguments resolver manager.
@@ -50,7 +50,6 @@ class Router {
    */
   private $argumentsResolverService;
 
-
   /**
    * HTTP message converter manager.
    *
@@ -58,86 +57,22 @@ class Router {
    */
   private $converterManager;
 
-
   /**
-   * Build annotation based router.
+   * Router constructor.
    *
-   * Created router has all provided by this library argument resolvers,
-   * and use provided by this library Route mappings scanner.
-   *
-   * @param string $controllersDirectory
-   *   Directory where controllers are stored.
-   *
-   * @return \ARouter\Routing\Router
-   *   Annotation based router.
+   * @param \ARouter\Routing\Scanner\RouteMappingsScannerInterface $scanner
+   * @param \ARouter\Routing\Resolver\Service\MethodArgumentsResolverService $argumentsResolverService
+   * @param \ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager $converterManager
    */
-  public static function build(string $controllersDirectory, ...$options): Router {
-    $router = new static(...$options);
-    $router->argumentsResolverService = new MethodArgumentsResolverService();
-    $router->argumentsResolverService->addArgumentResolvers([
-      new RequestArgumentResolver(),
-      new RequestParamArgumentResolver(),
-      new PathArgumentResolver(),
-      new RequestBodyArgumentResolver(),
-      new CookieValueArgumentResolver(),
-      new RequestHeaderArgumentResolver(),
-      new SessionAttributeArgumentResolver(),
-    ]);
-    $router->converterManager = new HttpMessageConverterManager();
-    $router->scanner = new AnnotationRouteMappingsScanner($controllersDirectory);
-    $router->discoverRouteMappings();
-    return $router;
+  public function __construct(RouteMappingsScannerInterface $scanner, MethodArgumentsResolverService $argumentsResolverService, HttpMessageConverterManager $converterManager) {
+    $this->scanner = $scanner;
+    $this->argumentsResolverService = $argumentsResolverService;
+    $this->converterManager = $converterManager;
   }
+
 
   /**
-   * Discover mappings between routes and controller action methods.
-   */
-  public function discoverRouteMappings(): void {
-    $this->routeMappings = $this->scanner->discoverRouteMappings();
-  }
-
-  /**
-   * Get route handler for given request.
-   *
-   * @param \Psr\Http\Message\ServerRequestInterface $request
-   *   HTTP request.
-   *
-   * @return null|\ARouter\Routing\RouteHandler
-   *   Route handler for given request or NULL if there is no matching handler.
-   */
-  public function getRouteHandler(ServerRequestInterface $request) {
-    $matchingRouteMapping = $this->getMatchingRouteMapping($request);
-    if (!empty($matchingRouteMapping)) {
-      $controllerName = $matchingRouteMapping->getController();
-      $routeHandler = new RouteHandler($this->getControllerInstance($controllerName), $matchingRouteMapping->getMethod(), []);
-      $method = new \ReflectionMethod($matchingRouteMapping->getController(), $matchingRouteMapping->getMethod());
-      $resolvedArguments = $this->argumentsResolverService->resolveArguments($method->getParameters(), $matchingRouteMapping, $request);
-      $routeHandler->addArguments($resolvedArguments);
-      return $routeHandler;
-    }
-    return NULL;
-  }
-
-  private function getMatchingRouteMapping(ServerRequestInterface $request) {
-    $requestPath = $request->getUri()->getPath();
-    foreach ($this->routeMappings as $routeMapping) {
-      $quotedRoutePath = preg_quote($routeMapping->getPath(), '/');
-      $quotedRoutePathRegex = '/^' . preg_replace('/\\\\{(.*)\\\\}/', '(?<$1>.*)', $quotedRoutePath) . '$/';
-      if (preg_match($quotedRoutePathRegex, $requestPath, $matches) !== 0) {
-        return $routeMapping;
-      }
-    }
-    return NULL;
-  }
-
-  /**
-   * Get HTTP response object for given request.
-   *
-   * @param \Psr\Http\Message\ServerRequestInterface $request
-   *   HTTP request.
-   *
-   * @return \Psr\Http\Message\ResponseInterface
-   *   HTTP response object for given request.
+   * {@inheritdoc}
    *
    * @throws \ARouter\Routing\Exception\ApplicableConverterNotFoundException
    *   When applicable converter is not found.
@@ -145,17 +80,16 @@ class Router {
    *   When route handler is not found.
    */
   public function getResponse(ServerRequestInterface $request): ResponseInterface {
+    if ($this->routeMappings == NULL) {
+      $this->routeMappings = $this->scanner->discoverRouteMappings();
+    }
     $routeHandler = $this->getRouteHandler($request);
     if (empty($routeHandler)) {
       throw new RouteHandlerNotFoundException($request);
     }
     $result = $routeHandler->execute();
     if (!$result instanceof ResponseInterface) {
-      $converter = $this->converterManager->getApplicableConverter($request);
-      if (empty($converter)) {
-        throw new ApplicableConverterNotFoundException($result, $this->converterManager->getConverters());
-      }
-      $result = $converter->toResponse($result);
+      $result = $this->converterManager->convertToResponse($result, $request);
     }
     return $result;
   }
@@ -174,76 +108,47 @@ class Router {
   }
 
   /**
-   * Add route mappings to router.
+   * Get route handler for given request.
    *
-   * @param \ARouter\Routing\RouteMapping[] $routeMappings
-   *   Route mappings for adding.
+   * @param \Psr\Http\Message\ServerRequestInterface $request
+   *   HTTP request.
+   *
+   * @return null|\ARouter\Routing\RouteHandler
+   *   Route handler for given request or NULL if there is no matching handler.
+   *
+   * @throws \ReflectionException
    */
-  public function addRouteMappings(array $routeMappings): void {
-    $this->routeMappings = array_merge($this->routeMappings, $routeMappings);
+  private function getRouteHandler(ServerRequestInterface $request) {
+    $matchingRouteMapping = $this->getMatchingRouteMapping($request);
+    if (!empty($matchingRouteMapping)) {
+      $controllerName = $matchingRouteMapping->getController();
+      $method = new \ReflectionMethod($matchingRouteMapping->getController(), $matchingRouteMapping->getMethod());
+      $resolvedArguments = $this->argumentsResolverService->resolveArguments($method->getParameters(), $matchingRouteMapping, $request);
+      $routeHandler = new RouteHandler($this->getControllerInstance($controllerName), $matchingRouteMapping->getMethod(), $resolvedArguments);
+      return $routeHandler;
+    }
+    return NULL;
   }
 
   /**
-   * Get route mappings from router.
+   * Get matching RouteMapping for incoming request.
    *
-   * @return \ARouter\Routing\RouteMapping[]
-   *   Route mappings from router.
-   */
-
-  public function getRouteMappings(): array {
-    return $this->routeMappings;
-  }
-
-
-  public function setArgumentsResolverService($argumentsResolverService) {
-    $this->argumentsResolverService = $argumentsResolverService;
-  }
-
-  /**
-   * @return \ARouter\Routing\Resolver\Service\MethodArgumentsResolverService
-   */
-  public function getArgumentsResolverService(): MethodArgumentsResolverService {
-    return $this->argumentsResolverService;
-  }
-
-  /**
-   * Set route mappings scanner for router.
+   * @param \Psr\Http\Message\ServerRequestInterface $request
+   *   Incoming request
    *
-   * @param \ARouter\Routing\Scanner\RouteMappingsScannerInterface $scanner
-   *   Route mappings scanner for router.
+   * @return \ARouter\Routing\RouteMapping|null
+   *   Matching RouteMapping or NULL.
    */
-  public function setScanner(RouteMappingsScannerInterface $scanner): void {
-    $this->scanner = $scanner;
+  private function getMatchingRouteMapping(ServerRequestInterface $request) {
+    $requestPath = $request->getUri()->getPath();
+    foreach ($this->routeMappings as $routeMapping) {
+      $quotedRoutePath = preg_quote($routeMapping->getPath(), '/');
+      $quotedRoutePathRegex = '/^' . preg_replace('/\\\\{(.*)\\\\}/', '(?<$1>.*)', $quotedRoutePath) . '$/';
+      if (preg_match($quotedRoutePathRegex, $requestPath, $matches) !== 0) {
+        return $routeMapping;
+      }
+    }
+    return NULL;
   }
-
-  /**
-   * Get route mappings scanner from router.
-   *
-   * @return \ARouter\Routing\Scanner\RouteMappingsScannerInterface
-   *   Route mappings scanner from router.
-   */
-  public function getScanner(): RouteMappingsScannerInterface {
-    return $this->scanner;
-  }
-
-  /**
-   * Get HTTP message converter manager.
-   *
-   * @return \ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager
-   */
-  public function getConverterManager(): HttpMessageConverterManager {
-    return $this->converterManager;
-  }
-
-  /**
-   * Set HTTP message converter manager.
-   *
-   * @param \ARouter\Routing\HttpMessageConverter\HttpMessageConverterManager $converterManager
-   *   HTTP message converter manager.
-   */
-  public function setConverterManager(HttpMessageConverterManager $converterManager): void {
-    $this->converterManager = $converterManager;
-  }
-
 
 }

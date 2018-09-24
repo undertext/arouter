@@ -5,7 +5,13 @@ namespace ARouter\Routing\Exception;
 use Psr\Http\Message\RequestInterface;
 
 /**
+ * @addtogroup exceptions
+ *
+ * ##RouteHandlerNotFoundException
  * Indicates that RouteHandler not found for incoming request.
+ * Make sure you have registered a route with correct path.
+ *
+ * @see Router
  */
 class RouteHandlerNotFoundException extends \Exception {
 
@@ -19,7 +25,8 @@ class RouteHandlerNotFoundException extends \Exception {
   /**
    * RouteHandlerNotFoundException constructor.
    *
-   * @param $request
+   * @param RequestInterface $request
+   *   Request object.
    */
   public function __construct(RequestInterface $request) {
     $this->request = $request;
@@ -28,7 +35,6 @@ class RouteHandlerNotFoundException extends \Exception {
     $method = $request->getMethod();
     parent::__construct("Route handler not found for $method request to '$path' path");
   }
-
 
   /**
    * Get request object.

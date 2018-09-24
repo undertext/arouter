@@ -2,11 +2,13 @@
 
 namespace ARouter\Routing;
 
+use ARouter\Routing\Exception\PathArgumentIsMissingException;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use PHPUnit\Framework\TestCase;
 use ARouter\Routing\Controllers\SubDirectory\TestController2;
 
 /**
- * Tests RoutingMiddleware functionality.
+ * Tests UrlBuilder class.
  */
 class UrlBuilderTest extends TestCase {
 
@@ -21,36 +23,43 @@ class UrlBuilderTest extends TestCase {
    * {@inheritdoc}
    */
   protected function setUp() {
+    AnnotationRegistry::registerLoader('class_exists');
     $this->urlBuilder = new UrlBuilder();
   }
 
   /**
-   * Tests URL generation from path.
+   * @covers \ARouter\Routing\UrlBuilder
    */
   public function testFromPath() {
     $url = $this->urlBuilder->fromPath('user/{name}/{action}', [
       'name' => 'username',
-      'action' => 'view'
+      'action' => 'view',
     ]);
     self::assertEquals($url, 'user/username/view');
   }
 
   /**
-   * Tests exception while URL generation from path.
+   * @covers \ARouter\Routing\UrlBuilder
+   * @covers \ARouter\Routing\Exception\PathArgumentIsMissingException
    */
   public function testExceptionFromPath() {
-    $this->expectException(\Exception::class);
-    $this->urlBuilder->fromPath('user/{name}/{action}', [
-      'name' => 'username',
-    ]);
+    try {
+      $this->urlBuilder->fromPath('user/{name}/{action}', [
+        'name' => 'username',
+      ]);
+      $this->fail();
+    } catch (PathArgumentIsMissingException $ex) {
+      $this->assertEquals($ex->getPath(), 'user/username/{action}');
+      $this->assertEquals($ex->getArgumentName(), 'action');
+    }
   }
 
   /**
-   * Tests URL generation from controller and method name.
+   * @covers \ARouter\Routing\UrlBuilder
    */
   public function testFromControllerMethod() {
-    $url = $this->urlBuilder->fromControllerMethod(TestController2::class, 'action2');
-    self::assertEquals($url, 'testpath2');
+    $url = $this->urlBuilder->fromControllerMethod(TestController2::class, 'simpleAction2');
+    self::assertEquals($url, 'simple-action-2');
   }
 
 }

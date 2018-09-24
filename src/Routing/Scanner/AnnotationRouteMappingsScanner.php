@@ -7,10 +7,8 @@ use ARouter\Routing\Utility\PHPClassesDetector;
 use Doctrine\Common\Annotations\AnnotationReader;
 use ARouter\Routing\Annotation\Controller;
 use ARouter\Routing\Annotation\Route;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
- *
  * Detect route mappings by annotation.
  *
  * Declare your controller class with @Controller annotation
@@ -29,7 +27,7 @@ class AnnotationRouteMappingsScanner implements RouteMappingsScannerInterface {
   /**
    * Doctrine Annotations reader.
    *
-   * @var AnnotationReader
+   * @var \Doctrine\Common\Annotations\AnnotationReader
    */
   private $annotationReader;
 
@@ -46,18 +44,16 @@ class AnnotationRouteMappingsScanner implements RouteMappingsScannerInterface {
    * @param $controllersDirectory
    *   Directory where controllers are located.
    */
-  public function __construct(string $controllersDirectory) {
-    AnnotationRegistry::registerLoader('class_exists');
+  public function __construct(string $controllersDirectory, AnnotationReader $annotationReader, PHPClassesDetector $classDetector) {
     $this->controllersDirectory = $controllersDirectory;
-    $this->annotationReader = new AnnotationReader();
-    $this->phpClassesDetector = new PHPClassesDetector();
+    $this->annotationReader = $annotationReader;
+    $this->phpClassesDetector = $classDetector;
   }
 
   /**
-   * Discover mappings between routes and controller action methods.
+   * {@inheritdoc}
    *
-   * @return \ARouter\Routing\RouteMapping[]
-   *   Discovered route mappings.
+   * @throws \ReflectionException
    */
   public function discoverRouteMappings(): array {
     $routeMappings = [];
@@ -75,6 +71,8 @@ class AnnotationRouteMappingsScanner implements RouteMappingsScannerInterface {
    *
    * @return \ReflectionClass[]
    *   Detected controllers.
+   *
+   * @throws \ReflectionException
    */
   protected function discoverControllers(): array {
     $controllers = [];

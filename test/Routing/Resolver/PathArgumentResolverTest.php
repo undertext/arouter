@@ -3,7 +3,6 @@
 namespace ARouter\Routing\Resolver;
 
 use ARouter\Routing\RouteMapping;
-use Psr\Http\Message\UriInterface;
 use ARouter\Routing\Controllers\TestController;
 
 /**
@@ -12,17 +11,14 @@ use ARouter\Routing\Controllers\TestController;
 class PathArgumentResolverTest extends ArgumentResolverTestBase {
 
   /**
-   * Tests resolve method.
+   * @covers \ARouter\Routing\Resolver\PathArgumentResolver
    */
   public function testResolve() {
-    $uri = $this->createMock(UriInterface::class);
-    $uri->method('getPath')->willReturn('user/testuser');
-    $this->request->method('getUri')->willReturn($uri);
+    $this->request->shouldReceive('getUri->getPath')->andReturn('user/testuser');
 
     $argumentResolver = new PathArgumentResolver();
-    $result = $argumentResolver->resolve($this->testControllerKeyedMethodParams, new RouteMapping('user/{name}', TestController::class, 'username', []), $this->request);
+    $result = $argumentResolver->resolve($this->testControllerKeyedMethodParams, new RouteMapping('user/{name}', TestController::class, 'argumentResolversPath', []), $this->request);
     self::assertEquals($result, ['name' => 'testuser']);
-
   }
 
 }

@@ -70,16 +70,6 @@ class RouteHandler {
   }
 
   /**
-   * Add additional controller method arguments.
-   *
-   * @param array $args
-   *   Controller method arguments.
-   */
-  public function addArguments(array $args): void {
-    $this->keyedArgs = array_merge($this->keyedArgs, $args);
-  }
-
-  /**
    * Convert controller method keyed arguments to form compatible with
    * <code>  call_user_func_array </code>
    *
@@ -90,6 +80,7 @@ class RouteHandler {
    *   Converted arguments.
    *
    * @throws \ARouter\Routing\Exception\MissingArgumentHandlerException
+   * @throws \ReflectionException
    */
   public function convertKeyedArgs(array $keyedArgs): array {
     $reflectionMethod = new ReflectionMethod($this->controller, $this->method);
@@ -112,6 +103,9 @@ class RouteHandler {
 
   /**
    * Execute route handler and return result.
+   *
+   * @throws \ARouter\Routing\Exception\MissingArgumentHandlerException
+   * @throws \ReflectionException
    */
   public function execute() {
     $arguments = $this->convertKeyedArgs($this->keyedArgs);

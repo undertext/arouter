@@ -18,7 +18,7 @@ class CookieValueArgumentResolver implements MethodArgumentResolver {
    */
   public function resolve(array $methodParams, RouteMapping $routeMapping, ServerRequestInterface $request): array {
     $args = [];
-    $cookies = $request->getCookieParams();;
+    $cookies = $request->getCookieParams();
     foreach ($routeMapping->getAnnotations() as $annotation) {
       if ($annotation instanceof CookieValue) {
         $queryParamName = $annotation->for;

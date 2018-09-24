@@ -2,13 +2,13 @@
 
 namespace ARouter\Routing\Controllers;
 
-
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UploadedFileInterface;
+use ARouter\Routing\Annotation\RequestParam;
 use ARouter\Routing\Annotation\Controller;
 use ARouter\Routing\Annotation\Route;
+use Mockery;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * @Controller
@@ -16,10 +16,41 @@ use ARouter\Routing\Annotation\Route;
 class TestController {
 
   /**
-   * @Route(path="testpath")
+   * @Route(path="simple-action")
    */
-  public function action($name, RequestInterface $request = NULL, UploadedFileInterface $file = NULL, $arg = NULL, $arg2 = 'defaultarg2') {
-    return "Some response";
+  public function simpleAction() {
+    $responseMock = Mockery::mock(ResponseInterface::class);
+    $responseMock->shouldReceive('getBody')
+      ->andReturn("This is a simple action");
+    return $responseMock;
+  }
+
+  /**
+   * @Route(path="parameter-in-path/{name}")
+   */
+  public function parameterInPathAction($name) {
+    $responseMock = Mockery::mock(ResponseInterface::class);
+    $responseMock->shouldReceive('getBody')
+      ->andReturn("Given parameter is $name");
+    return $responseMock;
+  }
+
+  /**
+   * @Route(path="parameter-in-path/{name}")
+   *
+   * @RequestParam(for="arg1")
+   * @RequestParam(for="arg2")
+   */
+  public function queryParamsAction($arg1, $arg2, $arg3 = 'default') {
+
+  }
+
+  public function argumentResolversPath($cookie, $requestBody, $requestHeader, $requestParam, UploadedFileInterface $file, $sessionAttribute, RequestInterface $request, $name) {
+
+  }
+
+  public function converterAction() {
+    return "string response";
   }
 
 }

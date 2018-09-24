@@ -3,6 +3,7 @@
 namespace ARouter\Routing;
 
 use ARouter\Routing\Annotation\Route;
+use ARouter\Routing\Exception\PathArgumentIsMissingException;
 use Doctrine\Common\Annotations\AnnotationReader;
 
 /**
@@ -35,14 +36,14 @@ class UrlBuilder {
    * @return string
    *   Generated URL.
    *
-   * @throws \Exception
+   * @throws PathArgumentIsMissingException
    *   If path argument is missing for URL generation.
    */
   public function fromPath(string $path, array $args): string {
     preg_match_all('|{([^}]*)}|', $path, $matches);
     foreach ($matches[1] as $match) {
       if (!isset($args[$match])) {
-        throw new \Exception("Path argument '{$match}' is missing for URL generation from path '{$path}'");
+        throw new PathArgumentIsMissingException($match, $path);
       }
       $path = str_replace('{' . $match . '}', $args[$match], $path);
     }
@@ -61,6 +62,9 @@ class UrlBuilder {
    *
    * @return string
    *   Generated URL.
+   *
+   * @throws \ARouter\Routing\Exception\PathArgumentIsMissingException
+   * @throws \ReflectionException
    */
   public function fromControllerMethod(string $controllerClass, string $method, array $args = []) {
     $annotationReader = new AnnotationReader();

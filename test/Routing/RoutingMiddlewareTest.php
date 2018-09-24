@@ -14,7 +14,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class RoutingMiddlewareTest extends TestCase {
 
   /**
-   * Tests process method.
+   * @covers \ARouter\Routing\RoutingMiddleware
    */
   public function testRoutingMiddleware() {
     $request = $this->createMock(ServerRequestInterface::class);
