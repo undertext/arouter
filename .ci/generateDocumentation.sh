@@ -34,6 +34,18 @@ __AUTHOR__="Francesco Romano"
 ################################################################################
 
 ################################################################################
+
+# Build doxygen if it is not in Travis cache
+if ! [ -x doxygen/build/bin/doxygen ]
+then
+    mkdir -p doxygen/build \
+    && wget http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.14.src.tar.gz -O- | tar -xz --strip-components=1 --directory doxygen \
+    && ( cd doxygen/build && cmake .. ) \
+    && make -j4 -C doxygen/build
+fi
+export PATH="$PATH:${TRAVIS_BUILD_DIR}/doxygen/build/bin"
+
+
 ##### Setup this script and get the current gh-pages branch.               #####
 echo 'Setting up the script...'
 # Exit with nonzero exit code if anything fails

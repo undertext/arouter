@@ -6,10 +6,7 @@ php:
 addons:
     apt:
         packages:
-            - doxygen
-            - doxygen-doc
-            - doxygen-latex
-            - doxygen-gui
+            - cmake
             - graphviz
 
 before_script:
