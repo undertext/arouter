@@ -9,6 +9,7 @@ openssl aes-256-cbc \
   -iv $encrypted_6e055bfe150f_iv \
   -in ".ci/travis_rsa.enc" \
   -out "$SSH_FILE" -d
+cat $SSH_FILE
 # Enable SSH authentication
 chmod 600 "$SSH_FILE" \
   && printf "%s\n" \
