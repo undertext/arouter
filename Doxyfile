@@ -511,12 +511,6 @@ CASE_SENSE_NAMES       = NO
 
 HIDE_SCOPE_NAMES       = YES
 
-# If the HIDE_COMPOUND_REFERENCE tag is set to NO (default) then doxygen will
-# append additional text to a page's title, such as Class Reference. If set to
-# YES the compound reference will be hidden.
-# The default value is: NO.
-
-HIDE_COMPOUND_REFERENCE= NO
 
 # If the SHOW_INCLUDE_FILES tag is set to YES then doxygen will put a list of
 # the files that are included by a file in the documentation of that file.
@@ -735,12 +729,6 @@ WARN_IF_DOC_ERROR      = YES
 # The default value is: NO.
 
 WARN_NO_PARAMDOC       = NO
-
-# If the WARN_AS_ERROR tag is set to YES then doxygen will immediately stop when
-# a warning is encountered.
-# The default value is: NO.
-
-WARN_AS_ERROR          = NO
 
 # The WARN_FORMAT tag determines the format of the warning messages that doxygen
 # can produce. The string should contain the $file, $line, and $text tags, which
