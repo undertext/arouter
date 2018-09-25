@@ -12,3 +12,10 @@ script:
 
 after_success:
     - bash <(curl -s https://codecov.io/bash) -t 4f93efb4-ef5c-4a78-9d29-47f1a4df9879
+  # Generate the docs only if master, the travis_build_docs is true and we can use secure variables
+    - >-
+      if [[ "$TRAVIS_BRANCH" = "master" && -n "$TRAVIS_BUILD_DOCS" && "$TRAVIS_PULL_REQUEST" = "false" ]] ; then
+        cd $PROJECT_DIR_ABS
+        source .ci/setup-ssh.sh || travis_terminate 1
+        .ci/generateDocumentation.sh || travis_terminate 1
+      fi
