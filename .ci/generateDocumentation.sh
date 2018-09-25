@@ -42,15 +42,12 @@ set -e
 GH_REPO_ORG=`echo $TRAVIS_REPO_SLUG | cut -d "/" -f 1`
 GH_REPO_NAME=`echo $TRAVIS_REPO_SLUG | cut -d "/" -f 2`
 GH_REPO_REF="github.com/$GH_REPO_ORG/$GH_REPO_NAME.git"
-DOXYFILE=$TRAVIS_BUILD_DIR/doc/Doxyfile
+DOXYFILE=$TRAVIS_BUILD_DIR/Doxyfile
 
 
 # Get the current gh-pages branch
 git clone -b gh-pages git@github.com:$GH_REPO_ORG/$GH_REPO_NAME.git code_docs
 cd code_docs
-
-# Copy DoxygenLayout.xml here
-cp $TRAVIS_BUILD_DIR/doc/DoxygenLayout.xml .
 
 ##### Configure git.
 # Set the push default to simple i.e. push only the current branch.
