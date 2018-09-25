@@ -1190,17 +1190,6 @@ HTML_COLORSTYLE_GAMMA  = 80
 
 HTML_TIMESTAMP         = NO
 
-# If the HTML_DYNAMIC_MENUS tag is set to YES then the generated HTML
-# documentation will contain a main index with vertical navigation menus that
-# are dynamically created via Javascript. If disabled, the navigation index will
-# consists of multiple levels of tabs that are statically embedded in every HTML
-# page. Disable this option to support browsers that do not have Javascript,
-# like the Qt help browser.
-# The default value is: YES.
-# This tag requires that the tag GENERATE_HTML is set to YES.
-
-HTML_DYNAMIC_MENUS     = YES
-
 # If the HTML_DYNAMIC_SECTIONS tag is set to YES then the generated HTML
 # documentation will contain sections that can be hidden and shown after the
 # page has loaded.
@@ -1703,18 +1692,7 @@ LATEX_HEADER           =
 # Note: Only use a user-defined footer if you know what you are doing!
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
-LATEX_FOOTER           = 
-
-# The LATEX_EXTRA_STYLESHEET tag can be used to specify additional user-defined
-# LaTeX style sheets that are included after the standard style sheets created
-# by doxygen. Using this option one can overrule certain style aspects. Doxygen
-# will copy the style sheet files to the output directory.
-# Note: The order of the extra style sheet files is of importance (e.g. the last
-# style sheet in the list overrules the setting of the previous ones in the
-# list).
-# This tag requires that the tag GENERATE_LATEX is set to YES.
-
-LATEX_EXTRA_STYLESHEET = 
+LATEX_FOOTER           =
 
 # The LATEX_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the LATEX_OUTPUT output
