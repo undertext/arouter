@@ -1,12 +1,15 @@
 ARouter
 ========
 Php annotation based router made for fun.
+Documentation can be found [here](https://undertext.github.io/arouter/html/index.html)
 
 Quick example
 -------------
 ```php
+// Enable annotations autolading. This is a reuired step.
+AnnotationRegistry::registerLoader('class_exists');
 // Build annotaion based router, find controllers in 'src/Controller' folder.
-$router = Router::build('src/Controller');
+$router = RouterFactory::getRouter('src/Controller');
 // Get response based on request.
 try {
    $response = $router->getResponse(ServerRequest::fromGlobals());
@@ -17,128 +20,16 @@ try {
 outputResponse($response); // outputResponse is a function that converts response to string and output it.
 ```
 
-Controllers
------------
-Controller is a class with *@Controller* annotation. Controller's methods annotated with
- *@Route* annotation will be registered as route handlers.
- This is an example of simple controller:
- ```php
- /**
-  * @Controller
-  */
- class ExampleController {
- 
-   /**
-    * @Route(path="/example-path")
-    */
-   public function action() {
-     return new Response(200, "It works'");
-     }
-   }
- }
+Main documentation sections:
+----------------------------
 
- ```
- 
- Arguments resolving
- ------------------
- Method arguments can be automatically resolved with help of *MethodArgumentsResolver* classes.
- 
- ### Request parameter resolving
+*NOTE: Due to Doxygen parser all code examples with PHP annotations do not wrap those annotations in DocBlock comment*
 
- Method argument can be resolved to GET/POST variable value using @RequestParam annotation.
-  ```php
- /**
-  * @RequestParam (for="page")
-  */
-  public function list($page) { print "Current page is $page" }
-  ```
-  So for request URL *some-path?page=3* $page will be resolved to *3*.
-  
- ### Path argument resolving
- 
- If method has placeholders in @Route path like
- ```php
- /**
-  * @Route (path="/user/{name}")
-  */  
-  public function userProfile($name){}
- ```
-  then arguments named as those placeholders will be resolved to placeholder values.
-  So for request URL *user/yarik* $name will be resolved to *yarik*.
-
- ### Request argument resolving
-  
-  Method argument of *RequestInterface* type like
-  ```php
-  public function hello(RequestInterface $r){}
-  ```
-  will be resolved to incoming HTTP Request object.
-
- ### Request body argument resolving
- 
- Method argument can be resolved to request body value using @RequestBody annotation.
-  ```php
- /**
-  * @RequestBody (for="body")
-  */ 
-  public function something($body) { print "Request body is $body" }
-  ```
-
- ### Request header argument resolving
- 
- Method argument can be resolved to request header value using @RequestHeader annotation.
- ```php
- /**
-  * @RequestHeader (for="userAgent", from="User-Agent")
-  */ 
- public function something($userAgent) {}
- ```
-
- ### Session attribute argument resolving
- 
- Method argument can be resolved to a session attribute value using @SessionAttribute annotation.
-  ```php
- /**
-  * @SessionAttribute (for="some")
-  */ 
-  public function something($some) { }
-  ```
-  
- ### Cookie value argument resolving
- 
- Method argument can be resolved to a cookie value using @CookieValue annotation.
-  ```php
- /**
-  * @CookieValue (for="some")
-  */ 
-  public function something($some) { }
-  ```
-  
-  Building URLs
-  --------------
-  If you need to output URL of some route you can use `UrlBuilder` class.
-  Let's say we have `MyController` class with `actionName` method annotated with 
-  ```php
-     /**
-      * @Route(path="/my-path/{argName}")
-      */
-  ```
-  Then to get the url '/mypath/example' you can run next code:
-  
-  ```php
-  $urlBuilder = new UrlBuilder();
-  $url = $urlBuilder->fromControllerMethod(MyController::class, 'actionName', ['argName' => 'example']);
-  ```
-  
-  Router as PSR-15 middleware.
- ----------------------------
-  This router provides PSR-15 middleware support.
-  Usage example with https://github.com/procurios/middleware-dispatcher :
-   ```php
-   $dispatcher = (new Dispatcher())
-   ->withMiddleware(new RoutingMiddleware($router));
-   $response = $dispatcher->process($request);
-   ```
+- [Routes declaration](https://undertext.github.io/arouter/html/group__routes__declaring.html)
+- [Creating the router](https://undertext.github.io/arouter/html/group__router__creation.html)
+- [HTTP Message Converters](https://undertext.github.io/arouter/html/group__http__message__converters.html)
+- [Argument resolvers](https://undertext.github.io/arouter/html/group__argument__resolvers.html)
+- [Exceptions](https://undertext.github.io/arouter/html/group__exceptions.html)
 
 [![Build Status](https://travis-ci.com/undertext/arouter.svg?branch=master)](https://travis-ci.com/undertext/arouter)
 [![codecov](https://codecov.io/gh/undertext/arouter/branch/master/graph/badge.svg)](https://codecov.io/gh/undertext/arouter)
