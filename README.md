@@ -3,6 +3,16 @@ ARouter
 Php annotation based router made for fun.
 Documentation can be found [here](https://undertext.github.io/arouter/html/index.html)
 
+Requirements
+------------
+PHP version >= 7.1
+
+Installation
+--------------
+To install ARouter, run the command below:
+
+`composer require undertext/arouter`
+
 Quick example
 -------------
 ```php
