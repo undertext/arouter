@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab');
+
+#projectname {
+    font-family: "Roboto Slab", "ff-tisa-web-pro", "Georgia", Arial, sans-serif;
+}
+
+#projectbrief {
+    font-family: "Roboto Slab", "ff-tisa-web-pro", "Georgia", Arial, sans-serif;
+}
+
+body, table, div, p, dl {
+    font-family: "Roboto Slab", "ff-tisa-web-pro", "Georgia", Arial, sans-serif;
+}
+
+#titlearea {
+    background-color: #2980B9;
+    border-bottom: 0px;
+}
+
+#nav-tree {
+    background: #343131 none;
+}
+
+#nav-tree .label a {
+    color: white;
+}
+
+div.line{
+    line-height: 1.4;
+}

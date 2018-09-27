@@ -29,6 +29,7 @@ Main documentation sections:
 - [Creating the router](https://undertext.github.io/arouter/html/group__router__creation.html)
 - [HTTP Message Converters](https://undertext.github.io/arouter/html/group__http__message__converters.html)
 - [Argument resolvers](https://undertext.github.io/arouter/html/group__argument__resolvers.html)
+- [PSR-15 MIddleware](https://undertext.github.io/arouter/html/group__middleware.html)
 - [Exceptions](https://undertext.github.io/arouter/html/group__exceptions.html)
 
 [![Build Status](https://travis-ci.com/undertext/arouter.svg?branch=master)](https://travis-ci.com/undertext/arouter)

@@ -8,7 +8,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * PSR-15 middleware for routing.
+ * @addtogroup middleware
+ *
+ * ## PSR-15 middleware
+ * You can use this router as PSR-15 middleware.
  *
  * Example with https://github.com/procurios/middleware-dispatcher :
  * ```php
