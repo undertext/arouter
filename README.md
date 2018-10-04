@@ -1,6 +1,6 @@
 ARouter
 ========
-Php annotation based router made for fun.
+Php annotation based router.
 Documentation can be found [here](https://undertext.github.io/arouter/html/index.html)
 
 Requirements
@@ -16,7 +16,7 @@ To install ARouter, run the command below:
 Quick example
 -------------
 ```php
-// Enable annotations autolading. This is a reuired step.
+// Enable annotations autolading. This is a required step.
 AnnotationRegistry::registerLoader('class_exists');
 // Build annotaion based router, find controllers in 'src/Controller' folder.
 $router = RouterFactory::getRouter('src/Controller');
@@ -27,7 +27,7 @@ try {
     $response = new Response(404, [], "Route not found"); // This is an example of Guzzle HTTP Response usage.
 }
 
-outputResponse($response); // outputResponse is a function that converts response to string and output it.
+outputResponse($response); // outputResponse is a function that converts response to string and outputs it.
 ```
 
 Main documentation sections:

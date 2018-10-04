@@ -8,7 +8,7 @@ use Doctrine\Common\Annotations\Annotation\Required;
  * @addtogroup routes_declaring
  *
  *  ## Route annotation
- *  `Route` annotation is used for mapping web requests onto specific handler
+ *  `Route` annotation is used for mapping web requests onto specific controller
  *   methods.
  *
  * Here is an example of simple controller with mapping of 'contacts()' method
@@ -19,7 +19,7 @@ use Doctrine\Common\Annotations\Annotation\Required;
  *
  *   @Route (path="/contacts", method="GET")
  *   public function contacts() {
- *    echo 'This is our contacts page.';
+ *    return new Response(200, [], "Contacts page");
  *   }
  *  }
  * ```

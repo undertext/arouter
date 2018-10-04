@@ -10,7 +10,7 @@ use ARouter\Routing\RouteMapping;
  *
  * ## Path arguments
  *
- * If action method has placeholders in @Route path like
+ * If @Route annotation contains placeholders in "path" like
  * ```php
  * @Route (path="/user/{name}")
  * public function profile($name){}

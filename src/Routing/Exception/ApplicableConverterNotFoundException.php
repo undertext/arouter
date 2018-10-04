@@ -9,7 +9,7 @@ namespace ARouter\Routing\Exception;
  * Indicates that applicable HTTP message converter was not found.
  * Happens when controller method returns something else than ResponseInterface
  * object and applicable converter is not registered in router.
- * You can pass custom converters on `Router::getRouter()` call.
+ * You can pass custom converters on `RouterFactory::getRouter()` call.
  *
  * @see HttpMessageConverterManager
  */

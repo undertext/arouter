@@ -15,7 +15,7 @@ use Psr\Http\Message\ResponseInterface;
  * to HTTP response object. This way we can return objects in controller methods
  * and they will be automatically converted to Response objects.
  *
- * For example if we will create `JsonHttpMessageConverter` then in theory we
+ * For example if we create `JsonHttpMessageConverter` then in theory we
  * will have possibility to return object/arrays from our controller
  * ```php
  * public function getData(){
