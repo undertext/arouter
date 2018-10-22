@@ -2,9 +2,8 @@
 
 namespace ARouter\Routing\Resolver;
 
-use Psr\Http\Message\ServerRequestInterface;
+use ARouter\Routing\RouteMatch;
 use ARouter\Routing\Annotation\RequestHeader;
-use ARouter\Routing\RouteMapping;
 
 /**
  *  Resolve request header object arguments.
@@ -16,13 +15,14 @@ class RequestHeaderArgumentResolver implements MethodArgumentResolver {
   /**
    * {@inheritdoc}
    */
-  public function resolve(array $methodParams, RouteMapping $routeMapping, ServerRequestInterface $request): array {
+  public function resolve(array $methodParams, RouteMatch $routeMatch): array {
     $args = [];
+    $routeMapping = $routeMatch->getRouteMapping();
     foreach ($routeMapping->getAnnotations() as $annotation) {
       if ($annotation instanceof RequestHeader) {
         $queryParamName = $annotation->for;
         if (isset($methodParams[$queryParamName])) {
-          $args[$queryParamName] = $request->getHeader($annotation->from);
+          $args[$queryParamName] = $routeMatch->getRequest()->getHeader($annotation->from);
         }
       }
     }

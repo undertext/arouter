@@ -119,11 +119,12 @@ class Router implements RouterInterface {
    * @throws \ReflectionException
    */
   private function getRouteHandler(ServerRequestInterface $request) {
-    $matchingRouteMapping = $this->getMatchingRouteMapping($request);
-    if (!empty($matchingRouteMapping)) {
+    $routeMatch = $this->getRouteMatch($request);
+    if (!empty($routeMatch)) {
+      $matchingRouteMapping = $routeMatch->getRouteMapping();
       $controllerName = $matchingRouteMapping->getController();
       $method = new \ReflectionMethod($matchingRouteMapping->getController(), $matchingRouteMapping->getMethod());
-      $resolvedArguments = $this->argumentsResolverService->resolveArguments($method->getParameters(), $matchingRouteMapping, $request);
+      $resolvedArguments = $this->argumentsResolverService->resolveArguments($method->getParameters(), $routeMatch, $request);
       $routeHandler = new RouteHandler($this->getControllerInstance($controllerName), $matchingRouteMapping->getMethod(), $resolvedArguments);
       return $routeHandler;
     }
@@ -136,16 +137,21 @@ class Router implements RouterInterface {
    * @param \Psr\Http\Message\ServerRequestInterface $request
    *   Incoming request
    *
-   * @return \ARouter\Routing\RouteMapping|null
+   * @return \ARouter\Routing\RouteMatch|null
    *   Matching RouteMapping or NULL.
    */
-  private function getMatchingRouteMapping(ServerRequestInterface $request) {
+  private function getRouteMatch(ServerRequestInterface $request): ?RouteMatch {
     $requestPath = $request->getUri()->getPath();
     foreach ($this->routeMappings as $routeMapping) {
+      // Route path like '/user/{name}/{section}' converts to '\/user\/\{name}\/\{section\}'.
+      // This converted route path is suitable for use in 'preg_replace' functions.
       $quotedRoutePath = preg_quote($routeMapping->getPath(), '/');
-      $quotedRoutePathRegex = '/^' . preg_replace('/\\\\{(.*)\\\\}/', '(?<$1>.*)', $quotedRoutePath) . '$/';
+      // Convert quoted route path like "\/user\/\{name}\/\{section\}" to
+      // "/^\/user\/(?<name>.*)\/(?<section>.*)$/".
+      // Thus after using 'preg_match' we will capture our named groups.
+      $quotedRoutePathRegex = '/^' . preg_replace('/\\\{([^\/]*)\\\}/', '(?<$1>.*)', $quotedRoutePath) . '$/';
       if (preg_match($quotedRoutePathRegex, $requestPath, $matches) !== 0) {
-        return $routeMapping;
+        return new RouteMatch($routeMapping, $request, $matches);
       }
     }
     return NULL;

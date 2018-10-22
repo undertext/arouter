@@ -2,8 +2,7 @@
 
 namespace ARouter\Routing\Resolver;
 
-use Psr\Http\Message\ServerRequestInterface;
-use ARouter\Routing\RouteMapping;
+use ARouter\Routing\RouteMatch;
 
 /**
  * @addtogroup routes_declaring
@@ -27,14 +26,12 @@ class PathArgumentResolver implements MethodArgumentResolver {
   /**
    * {@inheritdoc}
    */
-  public function resolve(array $methodParams, RouteMapping $routeMapping, ServerRequestInterface $request): array {
-    $quotedRoutePath = preg_quote($routeMapping->getPath(), '/');
-    $routeParamsRegex = '/' . preg_replace('/\\\\{(.*)\\\\}/', '(?<$1>.*)', $quotedRoutePath) . '/';
-    preg_match($routeParamsRegex, $request->getUri()->getPath(), $matches);
-    $fields = array_filter(array_keys($matches), "is_string");
+  public function resolve(array $methodParams, RouteMatch $routeMatch): array {
+    $pathArguments = $routeMatch->getPathArguments();
+    $fields = array_filter(array_keys($pathArguments), "is_string");
     $args = [];
     foreach ($fields as $field) {
-      $args[$field] = $matches[$field];
+      $args[$field] = $pathArguments[$field];
     }
     return $args;
   }

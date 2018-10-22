@@ -5,6 +5,7 @@ namespace ARouter\Routing\Resolver;
 use ARouter\Routing\RouteMapping;
 use ARouter\Routing\Annotation\CookieValue;
 use ARouter\Routing\Controllers\TestController;
+use ARouter\Routing\RouteMatch;
 
 /**
  * Tests CookieValueArgumentResolver class.
@@ -24,7 +25,9 @@ class CookieValueArgumentResolverUnitTest extends ArgumentResolverTestBase {
     ]);
 
     $argumentResolver = new CookieValueArgumentResolver();
-    $result = $argumentResolver->resolve($this->testControllerKeyedMethodParams, new RouteMapping('request', TestController::class, 'argumentResolversPath', [$cookieValueAnnotation]), $this->request);
+    $routeMapping = new RouteMapping('request', TestController::class, 'argumentResolversPath', [$cookieValueAnnotation]);
+    $routeMatch = new RouteMatch($routeMapping, $this->request, []);
+    $result = $argumentResolver->resolve($this->testControllerKeyedMethodParams, $routeMatch);
     self::assertEquals($result, ['cookie' => '17-02-1993']);
   }
 

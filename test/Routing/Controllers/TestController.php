@@ -45,7 +45,7 @@ class TestController {
 
   }
 
-  public function argumentResolversPath($cookie, $requestBody, $requestHeader, $requestParam, UploadedFileInterface $file, $sessionAttribute, RequestInterface $request, $name) {
+  public function argumentResolversPath($cookie, $requestBody, $requestHeader, $requestParam, UploadedFileInterface $file, $sessionAttribute, RequestInterface $request, $name, $section) {
 
   }
 

@@ -19,23 +19,21 @@ class MethodArgumentsResolverService {
    *
    * @param \ReflectionParameter[] $methodParams
    *   Method parameters
-   * @param \ARouter\Routing\RouteMapping $routeMapping
+   * @param \ARouter\Routing\RouteMatch $routeMatch
    *   Route mapping matched by incoming request.
-   * @param \Psr\Http\Message\RequestInterface
-   *   Incoming request.
    *
    * @return array
    *   Resolved arguments as array in format ['param_name' => 'argument_value',
    *   ...]
    */
-  public function resolveArguments($methodParams, $routeMapping, $request): array {
+  public function resolveArguments($methodParams, $routeMatch): array {
     $resolvedArguments = [];
     $keyedMethodParams = [];
     foreach ($methodParams as $methodParam) {
       $keyedMethodParams[$methodParam->getName()] = $methodParam;
     }
     foreach ($this->argumentResolvers as $argumentResolver) {
-      $resolvedArguments = array_merge($resolvedArguments, $argumentResolver->resolve($keyedMethodParams, $routeMapping, $request));
+      $resolvedArguments = array_merge($resolvedArguments, $argumentResolver->resolve($keyedMethodParams, $routeMatch));
     }
     return $resolvedArguments;
   }

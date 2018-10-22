@@ -2,9 +2,8 @@
 
 namespace ARouter\Routing\Resolver;
 
+use ARouter\Routing\RouteMatch;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use ARouter\Routing\RouteMapping;
 
 /**
  * @addtogroup argument_resolvers
@@ -25,13 +24,13 @@ class RequestArgumentResolver implements MethodArgumentResolver {
   /**
    * {@inheritdoc}
    */
-  public function resolve(array $methodParams, RouteMapping $routeMapping, ServerRequestInterface $request): array {
+  public function resolve(array $methodParams, RouteMatch $routeMatch): array {
     $args = [];
     foreach ($methodParams as $methodParam) {
       /** @var \ReflectionParameter $methodParam */
       if ($methodParam->getClass() && $methodParam->getClass()
           ->implementsInterface(RequestInterface::class)) {
-        $args[$methodParam->getName()] = $request;
+        $args[$methodParam->getName()] = $routeMatch->getRequest();
       }
     }
     return $args;

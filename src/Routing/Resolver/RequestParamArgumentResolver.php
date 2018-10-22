@@ -2,10 +2,9 @@
 
 namespace ARouter\Routing\Resolver;
 
-use Psr\Http\Message\ServerRequestInterface;
+use ARouter\Routing\RouteMatch;
 use Psr\Http\Message\UploadedFileInterface;
 use ARouter\Routing\Annotation\RequestParam;
-use ARouter\Routing\RouteMapping;
 
 /**
  * Request parameter argument resolver.
@@ -17,8 +16,10 @@ class RequestParamArgumentResolver implements MethodArgumentResolver {
   /**
    * {@inheritdoc}
    */
-  public function resolve(array $methodParams, RouteMapping $routeMapping, ServerRequestInterface $request): array {
+  public function resolve(array $methodParams, RouteMatch $routeMatch): array {
     $args = [];
+    $routeMapping = $routeMatch->getRouteMapping();
+    $request = $routeMatch->getRequest();
     $queryParams = $request->getQueryParams();
     foreach ($routeMapping->getAnnotations() as $annotation) {
       if ($annotation instanceof RequestParam) {

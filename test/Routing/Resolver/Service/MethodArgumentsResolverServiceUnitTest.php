@@ -4,6 +4,7 @@ namespace ARouter\Routing\Resolver\Service;
 
 use ARouter\Routing\Resolver\MethodArgumentResolver;
 use ARouter\Routing\RouteMapping;
+use ARouter\Routing\RouteMatch;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -41,11 +42,12 @@ class MethodArgumentsResolverServiceUnitTest extends TestCase {
 
     $request =  Mockery::mock(ServerRequestInterface::class);
     $routeMapping =  Mockery::mock(RouteMapping::class);
+    $routeMatch = new RouteMatch($routeMapping, $request, []);
 
     $resolvedArguments = $resolverService->resolveArguments([
       $param1,
       $param2,
-    ], $routeMapping, $request);
+    ], $routeMatch);
 
     $this->assertEquals($resolvedArguments, [
       'arg1' => 'arg1value',

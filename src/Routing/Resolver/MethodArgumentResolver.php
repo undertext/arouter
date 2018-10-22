@@ -2,8 +2,7 @@
 
 namespace ARouter\Routing\Resolver;
 
-use Psr\Http\Message\ServerRequestInterface;
-use ARouter\Routing\RouteMapping;
+use ARouter\Routing\RouteMatch;
 
 /**
  * @defgroup argument_resolvers Argument resolvers
@@ -23,14 +22,12 @@ interface MethodArgumentResolver {
    *
    * @param \ReflectionParameter[] $methodParams
    *   Method parameters.
-   * @param \ARouter\Routing\RouteMapping $routeMapping
-   *   Route mapping.
-   * @param \Psr\Http\Message\ServerRequestInterface $request
-   *   Incoming HTTP request.
+   * @param \ARouter\Routing\RouteMatch $routeMatch
+   *   Route match.
    *
    * @return array
    *   Resolved method arguments.
    */
-  public function resolve(array $methodParams, RouteMapping $routeMapping, ServerRequestInterface $request): array;
+  public function resolve(array $methodParams, RouteMatch $routeMatch): array;
 
 }

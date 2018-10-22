@@ -2,9 +2,8 @@
 
 namespace ARouter\Routing\Resolver;
 
-use Psr\Http\Message\ServerRequestInterface;
+use ARouter\Routing\RouteMatch;
 use ARouter\Routing\Annotation\SessionAttribute;
-use ARouter\Routing\RouteMapping;
 
 /**
  *  Resolve request body object arguments.
@@ -16,8 +15,9 @@ class SessionAttributeArgumentResolver implements MethodArgumentResolver {
   /**
    * {@inheritdoc}
    */
-  public function resolve(array $methodParams, RouteMapping $routeMapping, ServerRequestInterface $request): array {
+  public function resolve(array $methodParams, RouteMatch $routeMatch): array {
     $args = [];
+    $routeMapping = $routeMatch->getRouteMapping();
     foreach ($routeMapping->getAnnotations() as $annotation) {
       if ($annotation instanceof SessionAttribute) {
         $queryParamName = $annotation->for;
