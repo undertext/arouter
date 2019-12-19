@@ -46,7 +46,7 @@ class PHPClassesDetector {
    * @return null|string
    *   Full classname or NULL if no class found in file.
    */
-  private function getFullClassName(string $pathToFile): string {
+  private function getFullClassName(string $pathToFile): ?string {
     $contents = file_get_contents($pathToFile);
     $namespace = $class = '';
     $tokens = token_get_all($contents);
